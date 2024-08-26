@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="clock-container">
+        <div id="clock"></div>
+        <div id="date"></div>
+        <div id="day"></div>
+        <div id="timezone"></div>
+        <div class="controls">
+            <button id="startStopwatch">Start Stopwatch</button>
+            <button id="resetStopwatch">Reset Stopwatch</button>
+            <input type="number" id="timerInput" placeholder="Enter minutes">
+            <button id="startTimer">Start Timer</button>
+        </div>
+        <div id="stopwatch">00:00:00</div>
+        <div id="timer">00:00:00</div>
+    </div>
+    <script src="/js/clock.js"></script>
+</body>
+</html>

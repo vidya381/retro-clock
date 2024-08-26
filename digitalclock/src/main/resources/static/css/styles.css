@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.clock-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#clock {
+    font-size: 48px;
+    font-weight: bold;
+}
+
+#date, #day, #timezone {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+button {
+    margin: 5px;
+    padding: 5px 10px;
+}
+
+#stopwatch, #timer {
+    font-size: 24px;
+    margin-top: 10px;
+}
