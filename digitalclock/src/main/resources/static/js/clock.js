@@ -1,19 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
-    function updateClock() {
-        const now = new Date();
-        const clock = document.getElementById('clock');
-        const date = document.getElementById('date');
-        const day = document.getElementById('day');
-        const timezone = document.getElementById('timezone');
 
-        clock.textContent = now.toLocaleTimeString();
-        date.textContent = now.toLocaleDateString();
-        day.textContent = now.toLocaleDateString(undefined, { weekday: 'long' });
-        timezone.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    // Alarm functionality
+    const setAlarmBtn = document.getElementById('setAlarm');
+    const alarmMessage = document.getElementById('alarmMessage');
+    let alarmTime = null;
+
+    setAlarmBtn.addEventListener('click', function() {
+        const alarmInput = document.getElementById('alarmTime').value;
+        if (alarmInput) {
+            alarmTime = new Date();
+            const [hours, minutes] = alarmInput.split(':');
+            alarmTime.setHours(hours, minutes, 0, 0);
+            alarmMessage.textContent = `Alarm set for ${alarmInput}`;
+        }
+    });
+
+    function checkAlarm() {
+        if (alarmTime && new Date() >= alarmTime) {
+            alert('Alarm ringing!');
+            alarmTime = null;
+            alarmMessage.textContent = '';
+        }
     }
 
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(checkAlarm, 1000);
 
     // Stopwatch functionality
     let stopwatchInterval;
@@ -21,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const stopwatchDisplay = document.getElementById('stopwatch');
     const startStopwatchBtn = document.getElementById('startStopwatch');
     const resetStopwatchBtn = document.getElementById('resetStopwatch');
+    const lapStopwatchBtn = document.getElementById('lapStopwatch');
+    const lapTimesDisplay = document.getElementById('lapTimes');
+    let lapTimes = [];
 
     startStopwatchBtn.addEventListener('click', function() {
         if (stopwatchInterval) {
@@ -37,8 +50,17 @@ document.addEventListener('DOMContentLoaded', function() {
         clearInterval(stopwatchInterval);
         stopwatchInterval = null;
         stopwatchTime = 0;
+        lapTimes = [];
         updateStopwatchDisplay();
+        updateLapTimesDisplay();
         startStopwatchBtn.textContent = 'Start Stopwatch';
+    });
+
+    lapStopwatchBtn.addEventListener('click', function() {
+        if (stopwatchInterval) {
+            lapTimes.push(stopwatchTime);
+            updateLapTimesDisplay();
+        }
     });
 
     function updateStopwatch() {
@@ -53,12 +75,23 @@ document.addEventListener('DOMContentLoaded', function() {
         stopwatchDisplay.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     }
 
+    function updateLapTimesDisplay() {
+        lapTimesDisplay.innerHTML = lapTimes.map((time, index) => {
+            const hours = Math.floor(time / 3600);
+            const minutes = Math.floor((time % 3600) / 60);
+            const seconds = time % 60;
+            return `<div>Lap ${index + 1}: ${pad(hours)}:${pad(minutes)}:${pad(seconds)}</div>`;
+        }).join('');
+    }
+
     // Timer functionality
     let timerInterval;
     let timerTime = 0;
     const timerDisplay = document.getElementById('timer');
     const timerInput = document.getElementById('timerInput');
     const startTimerBtn = document.getElementById('startTimer');
+    const preset5MinBtn = document.getElementById('preset5Min');
+    const preset10MinBtn = document.getElementById('preset10Min');
 
     startTimerBtn.addEventListener('click', function() {
         if (timerInterval) {
@@ -77,6 +110,23 @@ document.addEventListener('DOMContentLoaded', function() {
             this.textContent = 'Stop Timer';
         }
     });
+
+    preset5MinBtn.addEventListener('click', function() {
+        setTimerPreset(5);
+    });
+
+    preset10MinBtn.addEventListener('click', function() {
+        setTimerPreset(10);
+    });
+
+    function setTimerPreset(minutes) {
+        timerTime = minutes * 60;
+        updateTimerDisplay();
+        if (!timerInterval) {
+            timerInterval = setInterval(updateTimer, 1000);
+            startTimerBtn.textContent = 'Stop Timer';
+        }
+    }
 
     function updateTimer() {
         if (timerTime > 0) {

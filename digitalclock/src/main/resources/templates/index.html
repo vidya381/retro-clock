@@ -8,15 +8,24 @@
 </head>
 <body>
     <div class="clock-container">
-        <div id="clock"></div>
-        <div id="date"></div>
-        <div id="day"></div>
-        <div id="timezone"></div>
+        <div th:each="clockData : ${clockDataList}">
+            <div th:text="${clockData.dateTime.toLocalTime()}"></div>
+            <div th:text="${clockData.timeZone}"></div>
+        </div>
+        <div class="alarm-container">
+            <input type="time" id="alarmTime" placeholder="Set Alarm">
+            <button id="setAlarm">Set Alarm</button>
+            <div id="alarmMessage"></div>
+        </div>
         <div class="controls">
             <button id="startStopwatch">Start Stopwatch</button>
             <button id="resetStopwatch">Reset Stopwatch</button>
+            <button id="lapStopwatch">Lap</button>
+            <div id="lapTimes"></div>
             <input type="number" id="timerInput" placeholder="Enter minutes">
             <button id="startTimer">Start Timer</button>
+            <button id="preset5Min">5 Min Timer</button>
+            <button id="preset10Min">10 Min Timer</button>
         </div>
         <div id="stopwatch">00:00:00</div>
         <div id="timer">00:00:00</div>
