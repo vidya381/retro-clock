@@ -1,38 +1,53 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Clock elements
+    const clockElement = document.getElementById('clock');
+    const dateElement = document.getElementById('date');
+    const dayElement = document.getElementById('day');
+    const timezoneElement = document.getElementById('timezone');
+    const timezoneSelect = document.getElementById('timezoneSelect');
 
-    // Alarm functionality
-    const setAlarmBtn = document.getElementById('setAlarm');
-    const alarmMessage = document.getElementById('alarmMessage');
-    let alarmTime = null;
-
-    setAlarmBtn.addEventListener('click', function() {
-        const alarmInput = document.getElementById('alarmTime').value;
-        if (alarmInput) {
-            alarmTime = new Date();
-            const [hours, minutes] = alarmInput.split(':');
-            alarmTime.setHours(hours, minutes, 0, 0);
-            alarmMessage.textContent = `Alarm set for ${alarmInput}`;
-        }
-    });
-
-    function checkAlarm() {
-        if (alarmTime && new Date() >= alarmTime) {
-            alert('Alarm ringing!');
-            alarmTime = null;
-            alarmMessage.textContent = '';
-        }
-    }
-
-    setInterval(checkAlarm, 1000);
-
-    // Stopwatch functionality
-    let stopwatchInterval;
-    let stopwatchTime = 0;
+    // Stopwatch elements
     const stopwatchDisplay = document.getElementById('stopwatch');
     const startStopwatchBtn = document.getElementById('startStopwatch');
     const resetStopwatchBtn = document.getElementById('resetStopwatch');
     const lapStopwatchBtn = document.getElementById('lapStopwatch');
     const lapTimesDisplay = document.getElementById('lapTimes');
+
+    // Timer elements
+    const timerDisplay = document.getElementById('timer');
+    const timerInput = document.getElementById('timerInput');
+    const startTimerBtn = document.getElementById('startTimer');
+    const preset5MinBtn = document.getElementById('preset5Min');
+    const preset10MinBtn = document.getElementById('preset10Min');
+
+    // Alarm elements
+    const setAlarmBtn = document.getElementById('setAlarm');
+    const alarmMessage = document.getElementById('alarmMessage');
+
+    // Clock functionality
+    function updateClock() {
+        const selectedTimezone = timezoneSelect.value;
+        const now = new Date(new Date().toLocaleString("en-US", {timeZone: selectedTimezone}));
+        
+        clockElement.textContent = now.toLocaleTimeString();
+        dateElement.textContent = now.toLocaleDateString();
+        dayElement.textContent = now.toLocaleDateString(undefined, { weekday: 'long' });
+        timezoneElement.textContent = selectedTimezone;
+
+        checkAlarm(now);
+    }
+
+    timezoneSelect.addEventListener('change', updateClock);
+
+    // Update the clock every second
+    setInterval(updateClock, 1000);
+
+    // Initial update
+    updateClock();
+
+    // Stopwatch functionality
+    let stopwatchInterval;
+    let stopwatchTime = 0;
     let lapTimes = [];
 
     startStopwatchBtn.addEventListener('click', function() {
@@ -87,11 +102,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Timer functionality
     let timerInterval;
     let timerTime = 0;
-    const timerDisplay = document.getElementById('timer');
-    const timerInput = document.getElementById('timerInput');
-    const startTimerBtn = document.getElementById('startTimer');
-    const preset5MinBtn = document.getElementById('preset5Min');
-    const preset10MinBtn = document.getElementById('preset10Min');
 
     startTimerBtn.addEventListener('click', function() {
         if (timerInterval) {
@@ -147,6 +157,28 @@ document.addEventListener('DOMContentLoaded', function() {
         timerDisplay.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     }
 
+    // Alarm functionality
+    let alarmTime = null;
+
+    setAlarmBtn.addEventListener('click', function() {
+        const alarmInput = document.getElementById('alarmTime').value;
+        if (alarmInput) {
+            const [hours, minutes] = alarmInput.split(':');
+            alarmTime = new Date();
+            alarmTime.setHours(hours, minutes, 0, 0);
+            alarmMessage.textContent = `Alarm set for ${alarmInput}`;
+        }
+    });
+
+    function checkAlarm(now) {
+        if (alarmTime && now >= alarmTime) {
+            alert('Alarm ringing!');
+            alarmTime = null;
+            alarmMessage.textContent = '';
+        }
+    }
+
+    // Utility function
     function pad(num) {
         return num.toString().padStart(2, '0');
     }

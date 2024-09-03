@@ -1,20 +1,22 @@
 package com.example.digitalclock.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.TimeZone;
 
 import org.springframework.stereotype.Service;
-
-import com.example.digitalclock.model.ClockData;
 
 @Service
 public class ClockService {
 
-    public List<ClockData> getCurrentTimes(List<String> timeZones) {
-        return timeZones.stream()
-                .map(zone -> new ClockData(LocalDateTime.now(ZoneId.of(zone)), ZoneId.of(zone)))
-                .collect(Collectors.toList());
+    public List<String> getAvailableTimezones() {
+        String[] availableIDs = TimeZone.getAvailableIDs();
+        List<String> timezones = new ArrayList<>();
+        for (String id : availableIDs) {
+            timezones.add(id);
+        }
+        Collections.sort(timezones);
+        return timezones;
     }
 }
