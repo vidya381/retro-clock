@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Clock</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -12,9 +13,7 @@
         
         <!-- Clock Section -->
         <div class="clock-section">
-            <select id="timezoneSelect">
-                <option th:each="timezone : ${timezones}" th:value="${timezone}" th:text="${timezone}"></option>
-            </select>
+            <select id="timezoneSelect"></select>
             <div id="clock" class="large-text"></div>
             <div id="date"></div>
             <div id="day"></div>
@@ -35,8 +34,6 @@
             <div id="stopwatch" class="large-text">00:00:00</div>
             <button id="startStopwatch">Start Stopwatch</button>
             <button id="resetStopwatch">Reset Stopwatch</button>
-            <button id="lapStopwatch">Lap</button>
-            <div id="lapTimes"></div>
         </div>
 
         <!-- Timer Section -->
@@ -45,11 +42,16 @@
             <div id="timer" class="large-text">00:00:00</div>
             <input type="number" id="timerInput" placeholder="Enter minutes">
             <button id="startTimer">Start Timer</button>
-            <button id="preset5Min">5 Min Timer</button>
-            <button id="preset10Min">10 Min Timer</button>
         </div>
     </div>
 
+    <audio id="alarmSound" src="/alarm.mp3"></audio>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="/js/clock.js"></script>
 </body>
 </html>

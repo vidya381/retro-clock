@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+
     // Clock elements
     const clockElement = document.getElementById('clock');
     const dateElement = document.getElementById('date');
@@ -10,34 +12,53 @@ document.addEventListener('DOMContentLoaded', function() {
     const stopwatchDisplay = document.getElementById('stopwatch');
     const startStopwatchBtn = document.getElementById('startStopwatch');
     const resetStopwatchBtn = document.getElementById('resetStopwatch');
-    const lapStopwatchBtn = document.getElementById('lapStopwatch');
-    const lapTimesDisplay = document.getElementById('lapTimes');
 
     // Timer elements
     const timerDisplay = document.getElementById('timer');
     const timerInput = document.getElementById('timerInput');
     const startTimerBtn = document.getElementById('startTimer');
-    const preset5MinBtn = document.getElementById('preset5Min');
-    const preset10MinBtn = document.getElementById('preset10Min');
 
     // Alarm elements
+    const alarmTimeInput = document.getElementById('alarmTime');
     const setAlarmBtn = document.getElementById('setAlarm');
     const alarmMessage = document.getElementById('alarmMessage');
+    const alarmSound = document.getElementById('alarmSound');
+
+    // Initialize variables
+    let alarmTime = null;
+    let stopwatchInterval;
+    let stopwatchTime = 0;
+    let timerInterval;
+    let timerTime = 0;
+
+    // Initialize timezone dropdown
+    if (timezoneSelect) {
+        moment.tz.names().forEach(tz => {
+            const option = new Option(tz, tz);
+            timezoneSelect.add(option);
+        });
+
+        $(timezoneSelect).select2({
+            placeholder: "Select a timezone",
+            templateResult: formatTimezone,
+            templateSelection: formatTimezone
+        });
+
+        timezoneSelect.addEventListener('change', updateClock);
+    }
 
     // Clock functionality
     function updateClock() {
-        const selectedTimezone = timezoneSelect.value;
-        const now = new Date(new Date().toLocaleString("en-US", {timeZone: selectedTimezone}));
+        const selectedTimezone = timezoneSelect ? timezoneSelect.value : moment.tz.guess();
+        const now = moment().tz(selectedTimezone);
         
-        clockElement.textContent = now.toLocaleTimeString();
-        dateElement.textContent = now.toLocaleDateString();
-        dayElement.textContent = now.toLocaleDateString(undefined, { weekday: 'long' });
-        timezoneElement.textContent = selectedTimezone;
+        if (clockElement) clockElement.textContent = now.format('HH:mm:ss');
+        if (dateElement) dateElement.textContent = now.format('MMMM D, YYYY');
+        if (dayElement) dayElement.textContent = now.format('dddd');
+        if (timezoneElement) timezoneElement.textContent = selectedTimezone;
 
         checkAlarm(now);
     }
-
-    timezoneSelect.addEventListener('change', updateClock);
 
     // Update the clock every second
     setInterval(updateClock, 1000);
@@ -46,41 +67,28 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClock();
 
     // Stopwatch functionality
-    let stopwatchInterval;
-    let stopwatchTime = 0;
-    let lapTimes = [];
-
-    startStopwatchBtn.addEventListener('click', function() {
+    function startStopwatch() {
+        console.log('Start Stopwatch button clicked');
         if (stopwatchInterval) {
             clearInterval(stopwatchInterval);
             stopwatchInterval = null;
-            this.textContent = 'Start Stopwatch';
+            startStopwatchBtn.textContent = 'Start Stopwatch';
         } else {
-            stopwatchInterval = setInterval(updateStopwatch, 1000);
-            this.textContent = 'Stop Stopwatch';
+            stopwatchInterval = setInterval(function() {
+                stopwatchTime++;
+                updateStopwatchDisplay();
+            }, 1000);
+            startStopwatchBtn.textContent = 'Stop Stopwatch';
         }
-    });
+    }
 
-    resetStopwatchBtn.addEventListener('click', function() {
+    function resetStopwatch() {
+        console.log('Reset Stopwatch button clicked');
         clearInterval(stopwatchInterval);
         stopwatchInterval = null;
         stopwatchTime = 0;
-        lapTimes = [];
         updateStopwatchDisplay();
-        updateLapTimesDisplay();
         startStopwatchBtn.textContent = 'Start Stopwatch';
-    });
-
-    lapStopwatchBtn.addEventListener('click', function() {
-        if (stopwatchInterval) {
-            lapTimes.push(stopwatchTime);
-            updateLapTimesDisplay();
-        }
-    });
-
-    function updateStopwatch() {
-        stopwatchTime++;
-        updateStopwatchDisplay();
     }
 
     function updateStopwatchDisplay() {
@@ -90,24 +98,13 @@ document.addEventListener('DOMContentLoaded', function() {
         stopwatchDisplay.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     }
 
-    function updateLapTimesDisplay() {
-        lapTimesDisplay.innerHTML = lapTimes.map((time, index) => {
-            const hours = Math.floor(time / 3600);
-            const minutes = Math.floor((time % 3600) / 60);
-            const seconds = time % 60;
-            return `<div>Lap ${index + 1}: ${pad(hours)}:${pad(minutes)}:${pad(seconds)}</div>`;
-        }).join('');
-    }
-
     // Timer functionality
-    let timerInterval;
-    let timerTime = 0;
-
-    startTimerBtn.addEventListener('click', function() {
+    function startTimer() {
+        console.log('Start Timer button clicked');
         if (timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
-            this.textContent = 'Start Timer';
+            startTimerBtn.textContent = 'Start Timer';
         } else {
             const minutes = parseInt(timerInput.value, 10);
             if (isNaN(minutes) || minutes <= 0) {
@@ -116,37 +113,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             timerTime = minutes * 60;
             updateTimerDisplay();
-            timerInterval = setInterval(updateTimer, 1000);
-            this.textContent = 'Stop Timer';
-        }
-    });
-
-    preset5MinBtn.addEventListener('click', function() {
-        setTimerPreset(5);
-    });
-
-    preset10MinBtn.addEventListener('click', function() {
-        setTimerPreset(10);
-    });
-
-    function setTimerPreset(minutes) {
-        timerTime = minutes * 60;
-        updateTimerDisplay();
-        if (!timerInterval) {
-            timerInterval = setInterval(updateTimer, 1000);
+            timerInterval = setInterval(function() {
+                if (timerTime > 0) {
+                    timerTime--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    startTimerBtn.textContent = 'Start Timer';
+                    alert('Timer finished!');
+                }
+            }, 1000);
             startTimerBtn.textContent = 'Stop Timer';
-        }
-    }
-
-    function updateTimer() {
-        if (timerTime > 0) {
-            timerTime--;
-            updateTimerDisplay();
-        } else {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            startTimerBtn.textContent = 'Start Timer';
-            alert('Timer finished!');
         }
     }
 
@@ -158,28 +136,62 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Alarm functionality
-    let alarmTime = null;
-
-    setAlarmBtn.addEventListener('click', function() {
-        const alarmInput = document.getElementById('alarmTime').value;
+    function setAlarm() {
+        const alarmInput = alarmTimeInput.value;
         if (alarmInput) {
             const [hours, minutes] = alarmInput.split(':');
-            alarmTime = new Date();
-            alarmTime.setHours(hours, minutes, 0, 0);
+            alarmTime = moment().set({hours, minutes, seconds: 0});
             alarmMessage.textContent = `Alarm set for ${alarmInput}`;
         }
-    });
+    }
 
     function checkAlarm(now) {
-        if (alarmTime && now >= alarmTime) {
+        if (alarmTime && now.isSameOrAfter(alarmTime)) {
+            if (alarmSound) {
+                alarmSound.play().catch(e => console.log('Error playing alarm sound:', e));
+            }
             alert('Alarm ringing!');
             alarmTime = null;
             alarmMessage.textContent = '';
         }
     }
 
-    // Utility function
+    // Utility functions
     function pad(num) {
         return num.toString().padStart(2, '0');
     }
+
+    function formatTimezone(state) {
+        if (!state.id) return state.text;
+        const timezone = state.id;
+        const currentTime = moment().tz(timezone).format('HH:mm:ss');
+        return $('<span>').text(`${state.text} - ${currentTime}`);
+    }
+
+    // Event listeners
+    if (startStopwatchBtn) {
+        startStopwatchBtn.addEventListener('click', startStopwatch);
+        console.log('Stopwatch event listener added');
+    }
+
+    if (resetStopwatchBtn) {
+        resetStopwatchBtn.addEventListener('click', resetStopwatch);
+        console.log('Reset Stopwatch event listener added');
+    }
+
+    if (startTimerBtn) {
+        startTimerBtn.addEventListener('click', startTimer);
+        console.log('Timer event listener added');
+    }
+
+    if (setAlarmBtn) {
+        setAlarmBtn.addEventListener('click', setAlarm);
+        console.log('Alarm event listener added');
+    }
+
+    // Initialize displays
+    updateStopwatchDisplay();
+    updateTimerDisplay();
+
+    console.log('Clock, Stopwatch, Timer, and Alarm JavaScript fully loaded');
 });

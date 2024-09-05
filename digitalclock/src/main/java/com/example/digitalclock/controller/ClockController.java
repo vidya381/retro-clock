@@ -1,13 +1,13 @@
 package com.example.digitalclock.controller;
 
-import com.example.digitalclock.service.ClockService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
-import java.util.TimeZone;
+import com.example.digitalclock.service.ClockService;
 
 @Controller
 public class ClockController {
@@ -17,8 +17,8 @@ public class ClockController {
 
     @GetMapping("/")
     public String index(Model model) {
-        List<String> availableTimezones = clockService.getAvailableTimezones();
-        model.addAttribute("timezones", availableTimezones);
+        List<String> timezones = clockService.getAvailableTimezones();
+        model.addAttribute("timezones", timezones);
         return "index";
     }
 }
