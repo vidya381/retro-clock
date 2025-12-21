@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Alarm elements
     const alarmTimeInput = document.getElementById('alarmTime');
     const setAlarmBtn = document.getElementById('setAlarm');
+    const cancelAlarmBtn = document.getElementById('cancelAlarm');
     const alarmMessage = document.getElementById('alarmMessage');
-    const alarmSound = document.getElementById('alarmSound');
 
     // Initialize variables
     let alarmTime = null;
@@ -67,18 +67,60 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClock();
 
     // Stopwatch functionality
+    function saveStopwatchState() {
+        const stopwatchData = {
+            time: stopwatchTime,
+            isRunning: stopwatchInterval !== null,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('digitalClockStopwatch', JSON.stringify(stopwatchData));
+    }
+
+    function loadStopwatchFromStorage() {
+        try {
+            const storedStopwatch = localStorage.getItem('digitalClockStopwatch');
+            if (storedStopwatch) {
+                const stopwatchData = JSON.parse(storedStopwatch);
+                stopwatchTime = stopwatchData.time;
+
+                // If it was running, calculate elapsed time since last save
+                if (stopwatchData.isRunning) {
+                    const elapsedSeconds = Math.floor((Date.now() - stopwatchData.timestamp) / 1000);
+                    stopwatchTime += elapsedSeconds;
+
+                    // Restart the stopwatch
+                    stopwatchInterval = setInterval(function() {
+                        stopwatchTime++;
+                        updateStopwatchDisplay();
+                        saveStopwatchState();
+                    }, 1000);
+                    startStopwatchBtn.textContent = 'Stop Stopwatch';
+                }
+
+                updateStopwatchDisplay();
+                console.log('Stopwatch loaded from localStorage:', stopwatchData);
+            }
+        } catch (error) {
+            console.error('Error loading stopwatch from localStorage:', error);
+            localStorage.removeItem('digitalClockStopwatch');
+        }
+    }
+
     function startStopwatch() {
         console.log('Start Stopwatch button clicked');
         if (stopwatchInterval) {
             clearInterval(stopwatchInterval);
             stopwatchInterval = null;
             startStopwatchBtn.textContent = 'Start Stopwatch';
+            saveStopwatchState();
         } else {
             stopwatchInterval = setInterval(function() {
                 stopwatchTime++;
                 updateStopwatchDisplay();
+                saveStopwatchState();
             }, 1000);
             startStopwatchBtn.textContent = 'Stop Stopwatch';
+            saveStopwatchState();
         }
     }
 
@@ -89,6 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
         stopwatchTime = 0;
         updateStopwatchDisplay();
         startStopwatchBtn.textContent = 'Start Stopwatch';
+        localStorage.removeItem('digitalClockStopwatch');
+        console.log('Stopwatch reset and cleared from storage');
     }
 
     function updateStopwatchDisplay() {
@@ -99,12 +143,72 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Timer functionality
+    function saveTimerState() {
+        const timerData = {
+            time: timerTime,
+            isRunning: timerInterval !== null,
+            timestamp: Date.now(),
+            inputValue: timerInput.value
+        };
+        localStorage.setItem('digitalClockTimer', JSON.stringify(timerData));
+    }
+
+    function loadTimerFromStorage() {
+        try {
+            const storedTimer = localStorage.getItem('digitalClockTimer');
+            if (storedTimer) {
+                const timerData = JSON.parse(storedTimer);
+                timerTime = timerData.time;
+                timerInput.value = timerData.inputValue || '';
+
+                // If it was running, calculate elapsed time since last save
+                if (timerData.isRunning) {
+                    const elapsedSeconds = Math.floor((Date.now() - timerData.timestamp) / 1000);
+                    timerTime -= elapsedSeconds;
+
+                    // Check if timer finished while page was closed
+                    if (timerTime <= 0) {
+                        timerTime = 0;
+                        updateTimerDisplay();
+                        alert('Timer finished!');
+                        localStorage.removeItem('digitalClockTimer');
+                        console.log('Timer completed while page was closed');
+                        return;
+                    }
+
+                    // Restart the timer
+                    timerInterval = setInterval(function() {
+                        if (timerTime > 0) {
+                            timerTime--;
+                            updateTimerDisplay();
+                            saveTimerState();
+                        } else {
+                            clearInterval(timerInterval);
+                            timerInterval = null;
+                            startTimerBtn.textContent = 'Start Timer';
+                            alert('Timer finished!');
+                            localStorage.removeItem('digitalClockTimer');
+                        }
+                    }, 1000);
+                    startTimerBtn.textContent = 'Stop Timer';
+                }
+
+                updateTimerDisplay();
+                console.log('Timer loaded from localStorage:', timerData);
+            }
+        } catch (error) {
+            console.error('Error loading timer from localStorage:', error);
+            localStorage.removeItem('digitalClockTimer');
+        }
+    }
+
     function startTimer() {
         console.log('Start Timer button clicked');
         if (timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
             startTimerBtn.textContent = 'Start Timer';
+            saveTimerState();
         } else {
             const minutes = parseInt(timerInput.value, 10);
             if (isNaN(minutes) || minutes <= 0) {
@@ -117,14 +221,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (timerTime > 0) {
                     timerTime--;
                     updateTimerDisplay();
+                    saveTimerState();
                 } else {
                     clearInterval(timerInterval);
                     timerInterval = null;
                     startTimerBtn.textContent = 'Start Timer';
                     alert('Timer finished!');
+                    localStorage.removeItem('digitalClockTimer');
                 }
             }, 1000);
             startTimerBtn.textContent = 'Stop Timer';
+            saveTimerState();
         }
     }
 
@@ -139,20 +246,85 @@ document.addEventListener('DOMContentLoaded', function() {
     function setAlarm() {
         const alarmInput = alarmTimeInput.value;
         if (alarmInput) {
+            const selectedTimezone = timezoneSelect ? timezoneSelect.value : moment.tz.guess();
             const [hours, minutes] = alarmInput.split(':');
-            alarmTime = moment().set({hours, minutes, seconds: 0});
-            alarmMessage.textContent = `Alarm set for ${alarmInput}`;
+            alarmTime = moment().tz(selectedTimezone).set({hours, minutes, seconds: 0});
+
+            // Save to localStorage
+            const alarmData = {
+                time: alarmInput,
+                timezone: selectedTimezone,
+                momentTime: alarmTime.toISOString()
+            };
+            localStorage.setItem('digitalClockAlarm', JSON.stringify(alarmData));
+
+            alarmMessage.textContent = `Alarm set for ${alarmInput} (${selectedTimezone})`;
+            console.log('Alarm saved to localStorage:', alarmData);
         }
+    }
+
+    function loadAlarmFromStorage() {
+        try {
+            const storedAlarm = localStorage.getItem('digitalClockAlarm');
+            if (storedAlarm) {
+                const alarmData = JSON.parse(storedAlarm);
+                alarmTime = moment(alarmData.momentTime);
+
+                // Check if alarm is in the past
+                const now = moment();
+                if (alarmTime.isBefore(now)) {
+                    console.log('Stored alarm is in the past, clearing...');
+                    clearAlarm();
+                    return;
+                }
+
+                // Restore alarm UI
+                alarmTimeInput.value = alarmData.time;
+                alarmMessage.textContent = `Alarm set for ${alarmData.time} (${alarmData.timezone})`;
+                console.log('Alarm loaded from localStorage:', alarmData);
+            }
+        } catch (error) {
+            console.error('Error loading alarm from localStorage:', error);
+            localStorage.removeItem('digitalClockAlarm');
+        }
+    }
+
+    function clearAlarm() {
+        alarmTime = null;
+        alarmTimeInput.value = '';
+        alarmMessage.textContent = '';
+        localStorage.removeItem('digitalClockAlarm');
+        console.log('Alarm cleared');
     }
 
     function checkAlarm(now) {
         if (alarmTime && now.isSameOrAfter(alarmTime)) {
-            if (alarmSound) {
-                alarmSound.play().catch(e => console.log('Error playing alarm sound:', e));
-            }
+            playAlarmSound();
             alert('Alarm ringing!');
-            alarmTime = null;
-            alarmMessage.textContent = '';
+            clearAlarm();
+        }
+    }
+
+    // Play alarm sound using Web Audio API
+    function playAlarmSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800; // Frequency in Hz
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 1);
+        } catch (e) {
+            console.log('Error playing alarm sound:', e);
         }
     }
 
@@ -189,9 +361,19 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Alarm event listener added');
     }
 
+    if (cancelAlarmBtn) {
+        cancelAlarmBtn.addEventListener('click', clearAlarm);
+        console.log('Cancel Alarm event listener added');
+    }
+
     // Initialize displays
     updateStopwatchDisplay();
     updateTimerDisplay();
+
+    // Load saved states from localStorage
+    loadStopwatchFromStorage();
+    loadTimerFromStorage();
+    loadAlarmFromStorage();
 
     console.log('Clock, Stopwatch, Timer, and Alarm JavaScript fully loaded');
 });
