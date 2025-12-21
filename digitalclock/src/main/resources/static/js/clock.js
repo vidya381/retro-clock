@@ -377,6 +377,19 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Timer event listener added');
     }
 
+    // Timer preset buttons
+    const presetButtons = document.querySelectorAll('.preset-btn');
+    presetButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const minutes = parseInt(this.getAttribute('data-minutes'));
+            timerInput.value = minutes;
+            console.log(`Timer preset selected: ${minutes} minutes`);
+        });
+    });
+    if (presetButtons.length > 0) {
+        console.log('Timer preset buttons event listeners added');
+    }
+
     if (setAlarmBtn) {
         setAlarmBtn.addEventListener('click', setAlarm);
         console.log('Alarm event listener added');

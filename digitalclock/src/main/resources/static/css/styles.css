@@ -391,6 +391,43 @@ button:active {
     background: linear-gradient(135deg, var(--warning), var(--accent));
 }
 
+/* Timer Presets */
+.timer-presets {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.preset-btn {
+    padding: 10px 20px;
+    margin: 0;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--glass-border);
+    color: var(--text-primary);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.preset-btn:hover {
+    background: var(--primary);
+    color: var(--text-light);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.preset-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
 /* Inputs */
 input[type="time"],
 input[type="number"] {
@@ -480,6 +517,16 @@ body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
         margin: 5px;
     }
 
+    .preset-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+
+    .timer-presets {
+        gap: 8px;
+        margin: 15px 0;
+    }
+
     .dark-mode-toggle {
         top: 15px;
         right: 15px;
@@ -508,6 +555,14 @@ body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     button {
         width: 100%;
         margin: 5px 0;
+    }
+
+    .preset-btn {
+        width: auto;
+        flex: 1 1 calc(33.333% - 8px);
+        min-width: 60px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
     }
 
     h1 {
