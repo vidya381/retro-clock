@@ -303,29 +303,39 @@ document.addEventListener('DOMContentLoaded', function() {
     function checkAlarm(now) {
         if (alarmTime && now.isSameOrAfter(alarmTime)) {
             playAlarmSound();
-            alert('Alarm ringing!');
-            clearAlarm();
+            // Small delay to let sound start before alert blocks
+            setTimeout(() => {
+                alert('Alarm ringing!');
+                clearAlarm();
+            }, 100);
         }
     }
 
-    // Play alarm sound using Web Audio API
+    // Play alarm sound using Web Audio API - longer duration
     function playAlarmSound() {
         try {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
 
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            // Play multiple beeps
+            for (let i = 0; i < 5; i++) {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
 
-            oscillator.frequency.value = 800; // Frequency in Hz
-            oscillator.type = 'sine';
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
 
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                oscillator.frequency.value = 800; // Frequency in Hz
+                oscillator.type = 'sine';
 
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 1);
+                const startTime = audioContext.currentTime + (i * 0.5);
+                const endTime = startTime + 0.3;
+
+                gainNode.gain.setValueAtTime(0.3, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, endTime);
+
+                oscillator.start(startTime);
+                oscillator.stop(endTime);
+            }
         } catch (e) {
             console.log('Error playing alarm sound:', e);
         }

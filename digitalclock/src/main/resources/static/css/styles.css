@@ -19,11 +19,278 @@
     --shadow-pink: 0 0 20px rgba(255, 0, 128, 0.5);
 }
 
+/* Dark Mode - Classic Green CRT Terminal */
 body.dark-mode {
-    --neon-cyan: #00ccff;
-    --neon-magenta: #ff66ff;
+    --neon-cyan: #00ff00;
+    --neon-magenta: #00ff00;
+    --neon-yellow: #00ff00;
+    --neon-pink: #00ff00;
+    --neon-purple: #00ff00;
+    --neon-green: #00ff00;
+
+    --terminal-green: #00ff00;
+    --terminal-amber: #ffaa00;
+    --terminal-dim: #00aa00;
+
     --bg-dark: #000000;
-    --grid-color: rgba(255, 0, 255, 0.15);
+    --bg-darker: #000000;
+    --grid-color: rgba(0, 255, 0, 0.03);
+
+    --text-primary: #00ff00;
+    --text-secondary: #00ff00;
+
+    --shadow-cyan: 0 0 20px rgba(0, 255, 0, 0.6);
+    --shadow-magenta: 0 0 20px rgba(0, 255, 0, 0.6);
+    --shadow-pink: 0 0 20px rgba(0, 255, 0, 0.6);
+}
+
+/* Dark mode - CRT Terminal styling */
+body.dark-mode {
+    background: #000000;
+    background-image: none;
+    animation: none;
+}
+
+/* Enhanced scanlines for dark mode */
+body.dark-mode::before {
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.3),
+        rgba(0, 0, 0, 0.3) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+}
+
+/* Stronger vignette for CRT effect */
+body.dark-mode::after {
+    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+body.dark-mode .clock-container {
+    background: rgba(0, 20, 0, 0.9);
+    border: 3px solid var(--terminal-green);
+    box-shadow:
+        0 0 30px rgba(0, 255, 0, 0.6),
+        0 0 60px rgba(0, 255, 0, 0.3),
+        inset 0 0 80px rgba(0, 255, 0, 0.08);
+}
+
+body.dark-mode .clock-container::before,
+body.dark-mode .clock-container::after {
+    border-color: var(--terminal-amber);
+    box-shadow: 0 0 15px var(--terminal-amber);
+}
+
+body.dark-mode h1 {
+    color: var(--terminal-green);
+    text-shadow:
+        0 0 10px var(--terminal-green),
+        0 0 20px var(--terminal-green),
+        0 0 30px var(--terminal-green),
+        0 0 40px rgba(0, 255, 0, 0.5);
+    animation: terminalFlicker 0.15s infinite alternate;
+}
+
+@keyframes terminalFlicker {
+    0% { opacity: 0.95; }
+    100% { opacity: 1; }
+}
+
+body.dark-mode h2 {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 15px var(--terminal-amber);
+}
+
+body.dark-mode h2::before {
+    color: var(--terminal-green);
+}
+
+body.dark-mode .large-text {
+    color: var(--terminal-green);
+    text-shadow:
+        0 0 15px var(--terminal-green),
+        0 0 30px var(--terminal-green),
+        0 0 45px var(--terminal-green);
+    animation: terminalPulse 3s ease-in-out infinite;
+}
+
+@keyframes terminalPulse {
+    0%, 100% {
+        text-shadow:
+            0 0 10px var(--terminal-green),
+            0 0 20px var(--terminal-green),
+            0 0 30px var(--terminal-green);
+    }
+    50% {
+        text-shadow:
+            0 0 15px var(--terminal-green),
+            0 0 30px var(--terminal-green),
+            0 0 45px var(--terminal-green),
+            0 0 60px rgba(0, 255, 0, 0.5);
+    }
+}
+
+body.dark-mode #date,
+body.dark-mode #day {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 10px var(--terminal-amber);
+}
+
+body.dark-mode #timezone {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: var(--terminal-green);
+    color: var(--terminal-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+}
+
+body.dark-mode .clock-section {
+    border-color: var(--terminal-green);
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow:
+        0 0 20px rgba(0, 255, 0, 0.3),
+        inset 0 0 30px rgba(0, 255, 0, 0.05);
+}
+
+body.dark-mode .alarm-section,
+body.dark-mode .stopwatch-section,
+body.dark-mode .timer-section {
+    border-color: var(--terminal-dim);
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow:
+        0 0 15px rgba(0, 255, 0, 0.2),
+        inset 0 0 20px rgba(0, 255, 0, 0.03);
+}
+
+body.dark-mode .alarm-section:hover,
+body.dark-mode .stopwatch-section:hover,
+body.dark-mode .timer-section:hover {
+    border-color: var(--terminal-green);
+    box-shadow:
+        0 0 25px rgba(0, 255, 0, 0.4),
+        inset 0 0 30px rgba(0, 255, 0, 0.06);
+}
+
+body.dark-mode button {
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.15), rgba(0, 170, 0, 0.15));
+    border-color: var(--terminal-green);
+    color: var(--terminal-green);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+}
+
+body.dark-mode button::before {
+    background: rgba(0, 255, 0, 0.2);
+}
+
+body.dark-mode button:hover {
+    box-shadow:
+        0 0 25px rgba(0, 255, 0, 0.6),
+        0 0 50px rgba(0, 255, 0, 0.3);
+    text-shadow: 0 0 10px var(--terminal-green);
+}
+
+body.dark-mode #cancelAlarm,
+body.dark-mode #resetStopwatch {
+    border-color: var(--terminal-amber);
+    color: var(--terminal-amber);
+    box-shadow: 0 0 15px rgba(255, 170, 0, 0.4);
+}
+
+body.dark-mode #cancelAlarm:hover,
+body.dark-mode #resetStopwatch:hover {
+    box-shadow:
+        0 0 25px rgba(255, 170, 0, 0.6),
+        0 0 50px rgba(255, 170, 0, 0.3);
+    text-shadow: 0 0 10px var(--terminal-amber);
+}
+
+body.dark-mode .preset-btn {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: var(--terminal-dim);
+    color: var(--terminal-green);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+body.dark-mode .preset-btn:hover {
+    background: rgba(0, 255, 0, 0.2);
+    border-color: var(--terminal-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+body.dark-mode input[type="time"],
+body.dark-mode input[type="number"] {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: var(--terminal-dim);
+    color: var(--terminal-green);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+body.dark-mode input[type="time"]:focus,
+body.dark-mode input[type="number"]:focus {
+    border-color: var(--terminal-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    text-shadow: 0 0 5px var(--terminal-green);
+}
+
+body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) hue-rotate(90deg) brightness(2);
+}
+
+body.dark-mode #alarmMessage {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: var(--terminal-green);
+    color: var(--terminal-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    text-shadow: 0 0 5px var(--terminal-green);
+}
+
+/* Dark mode Select2 - Terminal style */
+body.dark-mode .select2-container--default .select2-selection--single {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: var(--terminal-dim);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+body.dark-mode .select2-container--default .select2-selection--single:hover {
+    border-color: var(--terminal-green);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+}
+
+body.dark-mode .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--terminal-green);
+    text-shadow: 0 0 5px var(--terminal-green);
+}
+
+body.dark-mode .select2-dropdown {
+    background: rgba(0, 10, 0, 0.98);
+    border-color: var(--terminal-green);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+}
+
+body.dark-mode .select2-container--default .select2-results__option {
+    color: var(--terminal-green);
+}
+
+body.dark-mode .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: rgba(0, 255, 0, 0.2) !important;
+    color: var(--terminal-green);
+    text-shadow: 0 0 10px var(--terminal-green);
+}
+
+body.dark-mode .select2-container--default .select2-search--dropdown .select2-search__field {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: var(--terminal-dim);
+    color: var(--terminal-green);
+}
+
+body.dark-mode .dark-mode-toggle {
+    border-color: var(--terminal-green);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.7);
+    background: rgba(0, 255, 0, 0.15);
 }
 
 * {
