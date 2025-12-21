@@ -1,3 +1,31 @@
+:root {
+    --bg-body: #f0f0f0;
+    --bg-container: #fff;
+    --text-primary: #333;
+    --text-secondary: #7f8c8d;
+    --text-large: #2c3e50;
+    --border-color: #eee;
+    --input-border: #ddd;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --button-bg: #3498db;
+    --button-hover: #2980b9;
+    --alarm-text: #e74c3c;
+}
+
+body.dark-mode {
+    --bg-body: #1a1a1a;
+    --bg-container: #2d2d2d;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-large: #ffffff;
+    --border-color: #444;
+    --input-border: #555;
+    --shadow: rgba(0, 0, 0, 0.5);
+    --button-bg: #2980b9;
+    --button-hover: #3498db;
+    --alarm-text: #ff6b6b;
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -5,33 +33,39 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background-color: var(--bg-body);
+    transition: background-color 0.3s ease;
 }
 
 .clock-container {
-    background-color: #fff;
+    background-color: var(--bg-container);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px var(--shadow);
     text-align: center;
     max-width: 600px;
     width: 100%;
+    position: relative;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 h1, h2 {
-    color: #333;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
 }
 
 .large-text {
     font-size: 48px;
     font-weight: bold;
-    color: #2c3e50;
+    color: var(--text-large);
+    transition: color 0.3s ease;
 }
 
 #date, #day, #timezone {
     font-size: 18px;
     margin-top: 10px;
-    color: #7f8c8d;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
 }
 
 .select2-container {
@@ -42,13 +76,14 @@ h1, h2 {
 .alarm-section, .stopwatch-section, .timer-section {
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
 }
 
 button {
     margin: 5px;
     padding: 10px 15px;
-    background-color: #3498db;
+    background-color: var(--button-bg);
     color: white;
     border: none;
     border-radius: 4px;
@@ -57,20 +92,89 @@ button {
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: var(--button-hover);
+}
+
+.dark-mode-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 8px 12px;
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+    background-color: var(--border-color);
+    transform: scale(1.1);
+}
+
+body:not(.dark-mode) .dark-mode-toggle .icon-dark {
+    display: none;
+}
+
+body.dark-mode .dark-mode-toggle .icon-light {
+    display: none;
 }
 
 input[type="time"], input[type="number"] {
     margin: 5px;
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
+    background-color: var(--bg-container);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 #alarmMessage {
     margin-top: 10px;
     font-style: italic;
-    color: #e74c3c;
+    color: var(--alarm-text);
+    transition: color 0.3s ease;
+}
+
+/* Dark mode Select2 dropdown styling */
+body.dark-mode .select2-container--default .select2-selection--single {
+    background-color: var(--bg-container);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+body.dark-mode .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--text-primary);
+}
+
+body.dark-mode .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: var(--text-primary) transparent transparent transparent;
+}
+
+body.dark-mode .select2-dropdown {
+    background-color: var(--bg-container);
+    border-color: var(--input-border);
+}
+
+body.dark-mode .select2-container--default .select2-results__option {
+    background-color: var(--bg-container);
+    color: var(--text-primary);
+}
+
+body.dark-mode .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--button-bg);
+    color: white;
+}
+
+body.dark-mode .select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: var(--bg-container);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+}
+
+body.dark-mode .select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: var(--button-hover);
+    color: white;
 }
 
 /* Responsive design */
@@ -89,5 +193,12 @@ input[type="time"], input[type="number"] {
 
     button {
         padding: 8px 12px;
+    }
+
+    .dark-mode-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+        font-size: 18px;
     }
 }

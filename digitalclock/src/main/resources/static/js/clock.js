@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelAlarmBtn = document.getElementById('cancelAlarm');
     const alarmMessage = document.getElementById('alarmMessage');
 
+    // Dark mode elements
+    const darkModeToggle = document.getElementById('darkModeToggle');
+
     // Initialize variables
     let alarmTime = null;
     let stopwatchInterval;
@@ -340,6 +343,24 @@ document.addEventListener('DOMContentLoaded', function() {
         return $('<span>').text(`${state.text} - ${currentTime}`);
     }
 
+    // Dark mode functionality
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        console.log('Dark mode:', isDarkMode ? 'enabled' : 'disabled');
+    }
+
+    function loadDarkModePreference() {
+        const darkModePreference = localStorage.getItem('darkMode');
+        if (darkModePreference === 'enabled') {
+            document.body.classList.add('dark-mode');
+            console.log('Dark mode loaded from localStorage: enabled');
+        } else {
+            console.log('Dark mode loaded from localStorage: disabled');
+        }
+    }
+
     // Event listeners
     if (startStopwatchBtn) {
         startStopwatchBtn.addEventListener('click', startStopwatch);
@@ -365,6 +386,14 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelAlarmBtn.addEventListener('click', clearAlarm);
         console.log('Cancel Alarm event listener added');
     }
+
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        console.log('Dark mode toggle event listener added');
+    }
+
+    // Load dark mode preference first
+    loadDarkModePreference();
 
     // Initialize displays
     updateStopwatchDisplay();

@@ -38,6 +38,14 @@ A feature-rich web-based digital clock application built with Spring Boot and va
 - Accounts for elapsed time during page closure
 - Triggers completion alert if timer finished while page was closed
 
+### 5. Dark Mode
+- Toggle between light and dark themes
+- Eye-friendly dark color scheme
+- Smooth transitions between themes
+- **Persistent preference** - Theme choice saved to localStorage
+- Affects all UI elements including dropdowns
+- Accessible toggle button with theme icons
+
 ## Technologies Used
 
 ### Backend
@@ -141,6 +149,12 @@ http://localhost:8080
 7. If the timer finishes while the page is closed, you'll see the completion alert when you return
 8. An alert will notify you when the timer completes
 
+### Toggling Dark Mode
+1. Click the theme toggle button in the top-right corner of the clock container
+2. The interface will switch between light and dark modes
+3. Your preference is automatically saved and will be remembered on future visits
+4. Light mode shows a sun icon (☀️), dark mode shows a moon icon (🌙)
+
 ## Project Structure
 
 ```
@@ -201,7 +215,6 @@ Note: Web Audio API is required for alarm sounds and is supported in all modern 
 ## Future Enhancements
 
 - Multiple alarm support with labels
-- Dark mode toggle
 - Custom alarm sounds upload
 - Timer presets (5min, 10min, 15min, etc.)
 - Lap times for stopwatch
