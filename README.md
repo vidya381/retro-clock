@@ -1,6 +1,6 @@
 # Digital Clock
 
-A feature-rich web-based digital clock application built with Spring Boot and vanilla JavaScript. This application provides a world clock with timezone support, alarm functionality, stopwatch, and countdown timer.
+A feature-rich web-based digital clock application built with Spring Boot and vanilla JavaScript, featuring a stunning **retro 80s/90s arcade aesthetic**. This application provides a world clock with timezone support, alarm functionality, stopwatch, and countdown timer, all wrapped in nostalgic neon visuals.
 
 ## Features
 
@@ -30,6 +30,7 @@ A feature-rich web-based digital clock application built with Spring Boot and va
 
 ### 4. Countdown Timer
 - Set custom timer duration in minutes
+- **Quick Presets**: 5min, 10min, 15min, 30min, 1hr buttons for instant setup
 - Visual countdown display
 - Start/Stop toggle
 - Alert notification when timer completes
@@ -40,11 +41,48 @@ A feature-rich web-based digital clock application built with Spring Boot and va
 
 ### 5. Dark Mode
 - Toggle between light and dark themes
-- Eye-friendly dark color scheme
+- **Light Mode**: Colorful neon 80s arcade style with cyan, magenta, pink, yellow
+- **Dark Mode**: Classic green CRT terminal aesthetic (Matrix-style phosphor green)
 - Smooth transitions between themes
 - **Persistent preference** - Theme choice saved to localStorage
 - Affects all UI elements including dropdowns
 - Accessible toggle button with theme icons
+
+## Design & Aesthetics
+
+### Retro 80s/90s Theme
+The application features a meticulously crafted retro digital aesthetic that captures the essence of 1980s-90s arcade games and computer terminals:
+
+#### Light Mode - Neon Arcade
+- **Vibrant Neon Colors**: Cyan (#00ffff), Magenta (#ff00ff), Pink (#ff0080), Yellow (#ffff00), Purple (#9d00ff), Green (#00ff41)
+- **Animated Grid Background**: Moving retro grid pattern reminiscent of Tron and arcade games
+- **CRT Screen Effects**: Scanline overlay and vignette for authentic monitor appearance
+- **Neon Glow**: All text and borders feature pulsing neon glow effects
+- **Arcade-Style Buttons**: Buttons with ripple effects and neon shadows
+- **Monospace Fonts**: Courier New/Consolas for that authentic digital terminal look
+- **Corner Decorations**: Magenta corner accents on the main container
+- **Floating Animations**: Section headers with playful floating arrow indicators
+
+#### Dark Mode - Classic CRT Terminal
+- **Phosphor Green**: Everything rendered in classic terminal green (#00ff00)
+- **Amber Accents**: Secondary elements in warm amber (#ffaa00) for contrast
+- **Pure Black Background**: No grid animation, just pure black like old monitors
+- **Enhanced Scanlines**: Stronger CRT monitor scanline effect
+- **Screen Flicker**: Subtle flicker animation on title text for authenticity
+- **Phosphor Glow**: All text has that characteristic green phosphor glow
+- **Terminal Pulse**: Clock display pulses like old terminal cursors
+- **Stronger Vignette**: Dark edges simulating curved CRT screens
+- **No Color**: Monochrome green aesthetic like 1970s-80s computer terminals
+
+### Visual Effects
+- **Neon Pulse Animation**: Text shadows that pulse and glow
+- **Grid Movement**: Animated background grid (light mode only)
+- **Scanlines**: Horizontal lines simulating CRT displays
+- **Vignette**: Darkened edges for depth and CRT authenticity
+- **Glitch Effect**: Subtle glitch animations (reserved for future enhancements)
+- **Float Animation**: Playful floating elements
+- **Button Ripples**: Expanding circle effect on button hover
+- **Smooth Transitions**: All state changes animated smoothly
 
 ## Technologies Used
 
@@ -141,7 +179,8 @@ http://localhost:8080
 
 ### Using the Timer
 1. Navigate to the "Timer" section
-2. Enter the duration in minutes in the input field
+2. **Quick Start**: Click one of the preset buttons (5min, 10min, 15min, 30min, 1hr) for instant setup
+   - OR manually enter the duration in minutes in the input field
 3. Click "Start Timer" to begin countdown
 4. Click "Stop Timer" to pause
 5. Click "Start Timer" again to resume
@@ -151,7 +190,9 @@ http://localhost:8080
 
 ### Toggling Dark Mode
 1. Click the theme toggle button in the top-right corner of the clock container
-2. The interface will switch between light and dark modes
+2. The interface will switch between two distinct retro themes:
+   - **Light Mode**: Vibrant neon arcade with colorful cyan, magenta, pink, and yellow
+   - **Dark Mode**: Classic green CRT terminal with phosphor green glow (Matrix-style)
 3. Your preference is automatically saved and will be remembered on future visits
 4. Light mode shows a sun icon (☀️), dark mode shows a moon icon (🌙)
 
@@ -216,11 +257,12 @@ Note: Web Audio API is required for alarm sounds and is supported in all modern 
 
 - Multiple alarm support with labels
 - Custom alarm sounds upload
-- Timer presets (5min, 10min, 15min, etc.)
 - Lap times for stopwatch
-- Browser notifications
+- Browser notifications API integration
 - Progressive Web App (PWA) support
 - User accounts and cloud sync
+- Additional retro theme variants (amber monochrome, blue terminal, etc.)
+- Customizable color schemes
 
 ## Development
 
