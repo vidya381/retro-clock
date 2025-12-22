@@ -35,17 +35,28 @@
 
         <!-- Stopwatch Section -->
         <div class="stopwatch-section">
-            <h2>Stopwatch</h2>
-            <div id="stopwatch" class="large-text">00:00:00</div>
-            <button id="startStopwatch">Start Stopwatch</button>
-            <button id="resetStopwatch">Reset Stopwatch</button>
+            <h2>⏱️ Stopwatch</h2>
+            <div class="stopwatch-display-container">
+                <svg class="stopwatch-ring" width="200" height="200" viewBox="0 0 280 280">
+                    <circle class="stopwatch-ring-bg" cx="140" cy="140" r="120" />
+                    <circle class="stopwatch-ring-progress" cx="140" cy="140" r="120" id="stopwatchRingProgress" />
+                </svg>
+                <div class="stopwatch-center">
+                    <div id="stopwatch" class="large-text">00:00:00</div>
+                    <div id="stopwatchLaps" class="stopwatch-laps">0 seconds</div>
+                </div>
+            </div>
+            <div class="stopwatch-controls">
+                <button id="startStopwatch">▶ START</button>
+                <button id="resetStopwatch">⟲ RESET</button>
+            </div>
         </div>
 
         <!-- Timer Section -->
         <div class="timer-section">
             <h2>⏱️ Countdown Timer</h2>
             <div class="timer-display-container">
-                <svg class="timer-ring" width="280" height="280" viewBox="0 0 280 280">
+                <svg class="timer-ring" width="160" height="160" viewBox="0 0 280 280">
                     <circle class="timer-ring-bg" cx="140" cy="140" r="120" />
                     <circle class="timer-ring-progress" cx="140" cy="140" r="120" id="timerRingProgress" />
                 </svg>

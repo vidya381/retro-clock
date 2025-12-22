@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const stopwatchDisplay = document.getElementById('stopwatch');
     const startStopwatchBtn = document.getElementById('startStopwatch');
     const resetStopwatchBtn = document.getElementById('resetStopwatch');
+    const stopwatchLaps = document.getElementById('stopwatchLaps');
+    const stopwatchRingProgress = document.getElementById('stopwatchRingProgress');
 
     // Timer elements
     const timerDisplay = document.getElementById('timer');
@@ -100,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateStopwatchDisplay();
                         saveStopwatchState();
                     }, 1000);
-                    startStopwatchBtn.textContent = 'Stop Stopwatch';
+                    startStopwatchBtn.textContent = '⏸ STOP';
                 }
 
                 updateStopwatchDisplay();
@@ -117,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (stopwatchInterval) {
             clearInterval(stopwatchInterval);
             stopwatchInterval = null;
-            startStopwatchBtn.textContent = 'Start Stopwatch';
+            startStopwatchBtn.textContent = '▶ START';
             saveStopwatchState();
         } else {
             stopwatchInterval = setInterval(function() {
@@ -125,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateStopwatchDisplay();
                 saveStopwatchState();
             }, 1000);
-            startStopwatchBtn.textContent = 'Stop Stopwatch';
+            startStopwatchBtn.textContent = '⏸ STOP';
             saveStopwatchState();
         }
     }
@@ -136,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         stopwatchInterval = null;
         stopwatchTime = 0;
         updateStopwatchDisplay();
-        startStopwatchBtn.textContent = 'Start Stopwatch';
+        startStopwatchBtn.textContent = '▶ START';
         localStorage.removeItem('digitalClockStopwatch');
         console.log('Stopwatch reset and cleared from storage');
     }
@@ -146,6 +148,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const minutes = Math.floor((stopwatchTime % 3600) / 60);
         const seconds = stopwatchTime % 60;
         stopwatchDisplay.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+        // Update elapsed time display
+        if (stopwatchTime === 0) {
+            stopwatchLaps.textContent = '0 seconds';
+        } else if (stopwatchTime === 1) {
+            stopwatchLaps.textContent = '1 second';
+        } else if (stopwatchTime < 60) {
+            stopwatchLaps.textContent = `${stopwatchTime} seconds`;
+        } else if (stopwatchTime < 3600) {
+            const mins = Math.floor(stopwatchTime / 60);
+            const secs = stopwatchTime % 60;
+            stopwatchLaps.textContent = `${mins}m ${secs}s elapsed`;
+        } else {
+            const hrs = Math.floor(stopwatchTime / 3600);
+            const mins = Math.floor((stopwatchTime % 3600) / 60);
+            stopwatchLaps.textContent = `${hrs}h ${mins}m elapsed`;
+        }
+
+        // Update ring progress (shows current second 0-60)
+        const circumference = 754;
+        const secondProgress = (seconds / 60) * 100;
+        const offset = circumference - (secondProgress / 100) * circumference;
+        stopwatchRingProgress.style.strokeDashoffset = offset;
     }
 
     // Timer functionality
