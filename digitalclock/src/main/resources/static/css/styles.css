@@ -83,13 +83,22 @@ body.dark-mode .clock-container::after {
 }
 
 body.dark-mode h1 {
-    color: var(--terminal-green);
-    text-shadow:
-        0 0 10px var(--terminal-green),
-        0 0 20px var(--terminal-green),
-        0 0 30px var(--terminal-green),
-        0 0 40px rgba(0, 255, 0, 0.5);
-    animation: terminalFlicker 0.15s infinite alternate;
+    background: linear-gradient(90deg,
+        var(--terminal-green) 0%,
+        var(--terminal-amber) 50%,
+        var(--terminal-green) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 15px var(--terminal-green))
+            drop-shadow(0 0 25px var(--terminal-amber));
+    animation: titleShimmer 3s linear infinite, terminalFlicker 0.15s infinite alternate;
+}
+
+body.dark-mode h1::before,
+body.dark-mode h1::after {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 20px var(--terminal-amber);
 }
 
 @keyframes terminalFlicker {
@@ -732,15 +741,57 @@ h1 {
     font-weight: 900;
     text-align: center;
     margin-bottom: 40px;
-    color: var(--neon-cyan);
     text-transform: uppercase;
-    letter-spacing: 8px;
-    text-shadow:
-        0 0 10px var(--neon-cyan),
-        0 0 20px var(--neon-cyan),
-        0 0 30px var(--neon-cyan),
-        0 0 40px var(--neon-magenta);
-    animation: neonPulse 2s ease-in-out infinite;
+    letter-spacing: 18px;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    padding: 0;
+    background: linear-gradient(90deg,
+        var(--neon-cyan) 0%,
+        var(--neon-magenta) 50%,
+        var(--neon-yellow) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 15px var(--neon-cyan))
+            drop-shadow(0 0 25px var(--neon-magenta));
+    animation: titleShimmer 3s linear infinite;
+    background-size: 200% 100%;
+}
+
+@keyframes titleShimmer {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+}
+
+h1::before {
+    content: '★';
+    position: absolute;
+    left: -60px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    font-size: 2rem;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 20px var(--neon-yellow);
+    animation: starRotate 4s linear infinite;
+}
+
+h1::after {
+    content: '★';
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    font-size: 2rem;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 20px var(--neon-yellow);
+    animation: starRotate 4s linear infinite reverse;
+}
+
+@keyframes starRotate {
+    0% { transform: translateY(-50%) rotate(0deg) scale(1); }
+    50% { transform: translateY(-50%) rotate(180deg) scale(1.2); }
+    100% { transform: translateY(-50%) rotate(360deg) scale(1); }
 }
 
 h2 {
@@ -1727,8 +1778,15 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
     h1 {
         font-size: 2.5rem;
+        letter-spacing: 12px;
         margin-bottom: 30px;
-        letter-spacing: 4px;
+    }
+
+    h1::before,
+    h1::after {
+        font-size: 1.5rem;
+        left: -40px;
+        right: -40px;
     }
 
     h2 {
@@ -1922,7 +1980,15 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 @media (max-width: 480px) {
     h1 {
         font-size: 2rem;
-        letter-spacing: 2px;
+        letter-spacing: 8px;
+        margin-bottom: 25px;
+    }
+
+    h1::before,
+    h1::after {
+        font-size: 1.3rem;
+        left: -30px;
+        right: -30px;
     }
 
     h2 {
