@@ -40,10 +40,19 @@
                 </div>
             </div>
             <div class="alarm-controls">
-                <input type="time" id="alarmTime" placeholder="Set time">
+                <div class="alarm-input-wrapper">
+                    <label class="alarm-label">SET TIME</label>
+                    <input type="time" id="alarmTime" placeholder="Set time">
+                </div>
                 <div class="alarm-buttons">
-                    <button id="setAlarm">⏰ SET ALARM</button>
-                    <button id="cancelAlarm">✕ CANCEL</button>
+                    <button id="setAlarm" class="btn-set">
+                        <span class="btn-icon">⏰</span>
+                        <span class="btn-text">SET</span>
+                    </button>
+                    <button id="cancelAlarm" class="btn-cancel">
+                        <span class="btn-icon">✕</span>
+                        <span class="btn-text">CLEAR</span>
+                    </button>
                 </div>
             </div>
         </div>
