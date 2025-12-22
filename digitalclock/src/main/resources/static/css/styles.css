@@ -204,17 +204,39 @@ body.dark-mode #resetStopwatch:hover {
     text-shadow: 0 0 10px var(--terminal-amber);
 }
 
+body.dark-mode .timer-ring-bg {
+    stroke: rgba(0, 255, 0, 0.1);
+}
+
+body.dark-mode .timer-ring-progress {
+    stroke: var(--terminal-green);
+    filter: drop-shadow(0 0 10px var(--terminal-green));
+}
+
+body.dark-mode .timer-percentage {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 10px var(--terminal-amber);
+}
+
 body.dark-mode .preset-btn {
-    background: rgba(0, 255, 0, 0.1);
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.15), rgba(0, 170, 0, 0.1));
     border-color: var(--terminal-dim);
     color: var(--terminal-green);
     box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 
-body.dark-mode .preset-btn:hover {
+body.dark-mode .preset-btn::before {
     background: rgba(0, 255, 0, 0.2);
+}
+
+body.dark-mode .preset-icon {
+    filter: drop-shadow(0 0 5px var(--terminal-green));
+}
+
+body.dark-mode .preset-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.25), rgba(0, 170, 0, 0.15));
     border-color: var(--terminal-green);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode input[type="time"],
@@ -754,41 +776,162 @@ button:active {
     text-shadow: 0 0 10px var(--neon-yellow);
 }
 
+/* Timer Display Container */
+.timer-display-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px auto;
+    width: 280px;
+    height: 280px;
+}
+
+.timer-ring {
+    position: absolute;
+    transform: rotate(-90deg);
+}
+
+.timer-ring-bg {
+    fill: none;
+    stroke: rgba(0, 255, 255, 0.1);
+    stroke-width: 8;
+}
+
+.timer-ring-progress {
+    fill: none;
+    stroke: var(--neon-cyan);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 754;
+    stroke-dashoffset: 754;
+    transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(0 0 10px var(--neon-cyan));
+}
+
+.timer-center {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.timer-center .large-text {
+    font-size: 3rem;
+    margin: 0;
+}
+
+.timer-percentage {
+    font-size: 1.5rem;
+    color: var(--neon-magenta);
+    font-weight: 700;
+    margin-top: 10px;
+    text-shadow: 0 0 10px var(--neon-magenta);
+    letter-spacing: 2px;
+}
+
+/* Timer Controls */
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.timer-controls input {
+    flex: 1;
+    min-width: 180px;
+    max-width: 250px;
+}
+
+.timer-controls button {
+    flex: 0 0 auto;
+    padding: 14px 35px;
+    font-size: 1.1rem;
+}
+
 /* Timer Presets */
 .timer-presets {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin: 20px 0;
+    gap: 12px;
+    margin: 25px 0;
 }
 
 .preset-btn {
-    padding: 10px 20px;
+    padding: 0;
     margin: 0;
-    background: rgba(0, 255, 65, 0.1);
-    border: 2px solid var(--neon-green);
+    background: linear-gradient(135deg, rgba(0, 255, 65, 0.2), rgba(0, 255, 255, 0.1));
+    border: 3px solid var(--neon-green);
     color: var(--neon-green);
-    border-radius: 5px;
-    font-size: 0.9rem;
+    border-radius: 10px;
+    width: 80px;
+    height: 85px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px var(--neon-green);
+    box-shadow: 0 0 15px var(--neon-green);
     text-transform: uppercase;
     letter-spacing: 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.preset-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(0, 255, 65, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.preset-btn:hover::before {
+    width: 150px;
+    height: 150px;
+}
+
+.preset-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 0 5px var(--neon-green));
+    z-index: 1;
+}
+
+.preset-time {
+    font-size: 1.5rem;
+    font-weight: 900;
+    line-height: 1;
+    z-index: 1;
+}
+
+.preset-label {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+    opacity: 0.8;
+    z-index: 1;
 }
 
 .preset-btn:hover {
-    background: rgba(0, 255, 65, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 0 20px var(--neon-green);
+    background: linear-gradient(135deg, rgba(0, 255, 65, 0.3), rgba(0, 255, 255, 0.2));
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 25px var(--neon-green), 0 5px 15px rgba(0, 0, 0, 0.3);
     text-shadow: 0 0 10px var(--neon-green);
 }
 
 .preset-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 0 10px var(--neon-green);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 0 15px var(--neon-green);
 }
 
 /* Inputs */
@@ -879,14 +1022,55 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         letter-spacing: 1px;
     }
 
+    .timer-display-container {
+        width: 240px;
+        height: 240px;
+        margin: 20px auto;
+    }
+
+    .timer-ring {
+        width: 240px;
+        height: 240px;
+    }
+
+    .timer-center .large-text {
+        font-size: 2.5rem;
+    }
+
+    .timer-percentage {
+        font-size: 1.2rem;
+    }
+
     .preset-btn {
-        padding: 8px 16px;
+        width: 70px;
+        height: 75px;
         font-size: 0.85rem;
+    }
+
+    .preset-icon {
+        font-size: 1.5rem;
+    }
+
+    .preset-time {
+        font-size: 1.3rem;
+    }
+
+    .preset-label {
+        font-size: 0.6rem;
     }
 
     .timer-presets {
         gap: 8px;
         margin: 15px 0;
+    }
+
+    .timer-controls input {
+        min-width: 150px;
+    }
+
+    .timer-controls button {
+        padding: 12px 25px;
+        font-size: 1rem;
     }
 
     .dark-mode-toggle {
@@ -920,17 +1104,60 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         letter-spacing: 2px;
     }
 
+    .timer-display-container {
+        width: 200px;
+        height: 200px;
+    }
+
+    .timer-ring {
+        width: 200px;
+        height: 200px;
+    }
+
+    .timer-center .large-text {
+        font-size: 2rem;
+    }
+
+    .timer-percentage {
+        font-size: 1rem;
+        margin-top: 5px;
+    }
+
     button {
         width: 100%;
         margin: 5px 0;
     }
 
     .preset-btn {
-        width: auto;
-        flex: 1 1 calc(33.333% - 8px);
-        min-width: 60px;
-        padding: 8px 12px;
-        font-size: 0.8rem;
+        width: 60px;
+        height: 65px;
+        flex: 0 0 auto;
+    }
+
+    .preset-icon {
+        font-size: 1.3rem;
+    }
+
+    .preset-time {
+        font-size: 1.1rem;
+    }
+
+    .preset-label {
+        font-size: 0.55rem;
+    }
+
+    .timer-controls {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .timer-controls input {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .timer-controls button {
+        width: 100%;
     }
 }
 

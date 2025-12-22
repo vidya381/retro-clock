@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const timerDisplay = document.getElementById('timer');
     const timerInput = document.getElementById('timerInput');
     const startTimerBtn = document.getElementById('startTimer');
+    const timerPercentage = document.getElementById('timerPercentage');
+    const timerRingProgress = document.getElementById('timerRingProgress');
 
     // Alarm elements
     const alarmTimeInput = document.getElementById('alarmTime');
@@ -33,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let stopwatchTime = 0;
     let timerInterval;
     let timerTime = 0;
+    let timerTotalTime = 0;
 
     // Initialize timezone dropdown
     if (timezoneSelect) {
@@ -149,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function saveTimerState() {
         const timerData = {
             time: timerTime,
+            totalTime: timerTotalTime,
             isRunning: timerInterval !== null,
             timestamp: Date.now(),
             inputValue: timerInput.value
@@ -162,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (storedTimer) {
                 const timerData = JSON.parse(storedTimer);
                 timerTime = timerData.time;
+                timerTotalTime = timerData.totalTime || timerData.time;
                 timerInput.value = timerData.inputValue || '';
 
                 // If it was running, calculate elapsed time since last save
@@ -188,12 +193,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         } else {
                             clearInterval(timerInterval);
                             timerInterval = null;
-                            startTimerBtn.textContent = 'Start Timer';
+                            startTimerBtn.textContent = '▶ START';
                             alert('Timer finished!');
+                            timerTotalTime = 0;
                             localStorage.removeItem('digitalClockTimer');
                         }
                     }, 1000);
-                    startTimerBtn.textContent = 'Stop Timer';
+                    startTimerBtn.textContent = '⏸ STOP';
                 }
 
                 updateTimerDisplay();
@@ -210,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
-            startTimerBtn.textContent = 'Start Timer';
+            startTimerBtn.textContent = '▶ START';
             saveTimerState();
         } else {
             const minutes = parseInt(timerInput.value, 10);
@@ -219,6 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             timerTime = minutes * 60;
+            timerTotalTime = timerTime;
             updateTimerDisplay();
             timerInterval = setInterval(function() {
                 if (timerTime > 0) {
@@ -228,12 +235,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     clearInterval(timerInterval);
                     timerInterval = null;
-                    startTimerBtn.textContent = 'Start Timer';
+                    startTimerBtn.textContent = '▶ START';
                     alert('Timer finished!');
+                    timerTotalTime = 0;
                     localStorage.removeItem('digitalClockTimer');
                 }
             }, 1000);
-            startTimerBtn.textContent = 'Stop Timer';
+            startTimerBtn.textContent = '⏸ STOP';
             saveTimerState();
         }
     }
@@ -243,6 +251,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const minutes = Math.floor((timerTime % 3600) / 60);
         const seconds = timerTime % 60;
         timerDisplay.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+        // Update percentage and progress ring
+        if (timerTotalTime > 0) {
+            const percentage = Math.round((timerTime / timerTotalTime) * 100);
+            timerPercentage.textContent = `${percentage}%`;
+
+            // Update SVG ring (circumference = 2 * PI * radius = 2 * 3.14159 * 120 = 754)
+            const circumference = 754;
+            const offset = circumference - (percentage / 100) * circumference;
+            timerRingProgress.style.strokeDashoffset = offset;
+        } else {
+            timerPercentage.textContent = '0%';
+            timerRingProgress.style.strokeDashoffset = 754;
+        }
     }
 
     // Alarm functionality
