@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const alarmTimeInput = document.getElementById('alarmTime');
     const setAlarmBtn = document.getElementById('setAlarm');
     const cancelAlarmBtn = document.getElementById('cancelAlarm');
-    const alarmMessage = document.getElementById('alarmMessage');
+    const alarmDisplay = document.getElementById('alarmDisplay');
+    const alarmCountdown = document.getElementById('alarmCountdown');
+    const alarmIndicator = document.getElementById('alarmIndicator');
+    const alarmClockDisplay = document.querySelector('.alarm-clock-display');
 
     // Dark mode elements
     const darkModeToggle = document.getElementById('darkModeToggle');
@@ -308,7 +311,9 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             localStorage.setItem('digitalClockAlarm', JSON.stringify(alarmData));
 
-            alarmMessage.textContent = `Alarm set for ${alarmInput} (${selectedTimezone})`;
+            // Update display immediately
+            const now = moment().tz(selectedTimezone);
+            updateAlarmDisplay(now);
             console.log('Alarm saved to localStorage:', alarmData);
         }
     }
@@ -330,7 +335,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // Restore alarm UI
                 alarmTimeInput.value = alarmData.time;
-                alarmMessage.textContent = `Alarm set for ${alarmData.time} (${alarmData.timezone})`;
+                const currentTime = moment();
+                updateAlarmDisplay(currentTime);
                 console.log('Alarm loaded from localStorage:', alarmData);
             }
         } catch (error) {
@@ -342,19 +348,66 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearAlarm() {
         alarmTime = null;
         alarmTimeInput.value = '';
-        alarmMessage.textContent = '';
+        alarmDisplay.textContent = '--:--';
+        alarmCountdown.textContent = 'No alarm set';
+        alarmRingProgress.style.strokeDashoffset = 754;
         localStorage.removeItem('digitalClockAlarm');
         console.log('Alarm cleared');
     }
 
     function checkAlarm(now) {
-        if (alarmTime && now.isSameOrAfter(alarmTime)) {
-            playAlarmSound();
-            // Small delay to let sound start before alert blocks
-            setTimeout(() => {
-                alert('Alarm ringing!');
-                clearAlarm();
-            }, 100);
+        if (alarmTime) {
+            updateAlarmDisplay(now);
+
+            if (now.isSameOrAfter(alarmTime)) {
+                playAlarmSound();
+                // Small delay to let sound start before alert blocks
+                setTimeout(() => {
+                    alert('Alarm ringing!');
+                    clearAlarm();
+                }, 100);
+            }
+        }
+    }
+
+    function updateAlarmDisplay(now) {
+        if (!alarmTime) {
+            alarmDisplay.textContent = '--:--';
+            alarmCountdown.textContent = 'No alarm set';
+            alarmClockDisplay.classList.remove('alarm-active');
+            const indicatorLabel = alarmIndicator.querySelector('.indicator-label');
+            if (indicatorLabel) indicatorLabel.textContent = 'ALARM OFF';
+            return;
+        }
+
+        // Display alarm time
+        const selectedTimezone = timezoneSelect ? timezoneSelect.value : moment.tz.guess();
+        alarmDisplay.textContent = alarmTime.tz(selectedTimezone).format('HH:mm');
+
+        // Add active class
+        alarmClockDisplay.classList.add('alarm-active');
+        const indicatorLabel = alarmIndicator.querySelector('.indicator-label');
+        if (indicatorLabel) indicatorLabel.textContent = 'ALARM ON';
+
+        // Calculate time remaining
+        const diffMs = alarmTime.diff(now);
+        if (diffMs <= 0) {
+            alarmCountdown.textContent = 'Ringing!';
+            return;
+        }
+
+        const duration = moment.duration(diffMs);
+        const hours = Math.floor(duration.asHours());
+        const minutes = duration.minutes();
+        const seconds = duration.seconds();
+
+        // Format countdown text
+        if (hours > 0) {
+            alarmCountdown.textContent = `In ${hours}h ${minutes}m`;
+        } else if (minutes > 0) {
+            alarmCountdown.textContent = `In ${minutes}m ${seconds}s`;
+        } else {
+            alarmCountdown.textContent = `In ${seconds}s`;
         }
     }
 
@@ -468,6 +521,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize displays
     updateStopwatchDisplay();
     updateTimerDisplay();
+    alarmDisplay.textContent = '--:--';
+    alarmCountdown.textContent = 'No alarm set';
 
     // Load saved states from localStorage
     loadStopwatchFromStorage();

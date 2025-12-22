@@ -204,6 +204,45 @@ body.dark-mode #resetStopwatch:hover {
     text-shadow: 0 0 10px var(--terminal-amber);
 }
 
+body.dark-mode .alarm-clock-display {
+    border-color: var(--terminal-green);
+    box-shadow:
+        0 0 20px rgba(0, 255, 0, 0.4),
+        inset 0 0 30px rgba(0, 255, 0, 0.05);
+}
+
+body.dark-mode .alarm-time-display {
+    color: var(--terminal-green);
+    text-shadow:
+        0 0 15px var(--terminal-green),
+        0 0 30px var(--terminal-green);
+}
+
+body.dark-mode .alarm-status {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 8px var(--terminal-amber);
+}
+
+body.dark-mode .bell {
+    filter: drop-shadow(0 0 8px var(--terminal-amber));
+}
+
+body.dark-mode .alarm-indicator {
+    border-color: rgba(0, 255, 0, 0.3);
+}
+
+body.dark-mode .alarm-clock-display.alarm-active .indicator-dot {
+    background: var(--terminal-green);
+    box-shadow:
+        0 0 10px var(--terminal-green),
+        0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+body.dark-mode .alarm-clock-display.alarm-active .indicator-label {
+    color: var(--terminal-green);
+    text-shadow: 0 0 8px var(--terminal-green);
+}
+
 body.dark-mode .stopwatch-ring-bg {
     stroke: rgba(0, 255, 0, 0.1);
 }
@@ -270,14 +309,6 @@ body.dark-mode input[type="number"]:focus {
 
 body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(1) hue-rotate(90deg) brightness(2);
-}
-
-body.dark-mode #alarmMessage {
-    background: rgba(0, 255, 0, 0.1);
-    border-color: var(--terminal-green);
-    color: var(--terminal-green);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-    text-shadow: 0 0 5px var(--terminal-green);
 }
 
 /* Dark mode Select2 - Terminal style */
@@ -790,6 +821,155 @@ button:active {
     text-shadow: 0 0 10px var(--neon-yellow);
 }
 
+/* Alarm Clock Display */
+.alarm-clock-display {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(10, 10, 20, 0.8));
+    border: 3px solid var(--neon-pink);
+    border-radius: 15px;
+    padding: 25px 20px;
+    margin: 20px auto;
+    text-align: center;
+    position: relative;
+    box-shadow:
+        0 0 20px rgba(255, 0, 128, 0.4),
+        inset 0 0 30px rgba(255, 0, 128, 0.05);
+}
+
+.alarm-bells {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+}
+
+.bell {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 8px var(--neon-yellow));
+}
+
+.bell-left {
+    animation: ringLeft 0.5s ease-in-out infinite;
+    animation-play-state: paused;
+}
+
+.bell-right {
+    animation: ringRight 0.5s ease-in-out infinite;
+    animation-play-state: paused;
+}
+
+.alarm-clock-display.alarm-active .bell-left,
+.alarm-clock-display.alarm-active .bell-right {
+    animation-play-state: running;
+}
+
+@keyframes ringLeft {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
+}
+
+@keyframes ringRight {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(15deg); }
+    75% { transform: rotate(-15deg); }
+}
+
+.alarm-time-display {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--neon-cyan);
+    text-shadow:
+        0 0 15px var(--neon-cyan),
+        0 0 30px var(--neon-cyan),
+        0 0 45px rgba(0, 255, 255, 0.5);
+    letter-spacing: 8px;
+    margin: 15px 0 10px;
+    font-family: 'Courier New', monospace;
+}
+
+.alarm-status {
+    font-size: 1rem;
+    color: var(--neon-yellow);
+    font-weight: 700;
+    margin: 10px 0;
+    text-shadow: 0 0 8px var(--neon-yellow);
+    letter-spacing: 1px;
+    min-height: 24px;
+}
+
+.alarm-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    border: 2px solid rgba(255, 0, 128, 0.3);
+}
+
+.indicator-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #666;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.alarm-clock-display.alarm-active .indicator-dot {
+    background: var(--neon-pink);
+    box-shadow:
+        0 0 10px var(--neon-pink),
+        0 0 20px rgba(255, 0, 128, 0.5);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.indicator-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #999;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.alarm-clock-display.alarm-active .indicator-label {
+    color: var(--neon-pink);
+    text-shadow: 0 0 8px var(--neon-pink);
+}
+
+/* Alarm Controls */
+.alarm-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.alarm-controls input {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.alarm-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.alarm-buttons button {
+    flex: 1;
+    max-width: 180px;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+}
+
 /* Stopwatch Display Container */
 .stopwatch-display-container {
     position: relative;
@@ -1053,22 +1233,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
 
-/* Alarm Message */
-#alarmMessage {
-    margin-top: 15px;
-    padding: 12px 24px;
-    background: rgba(255, 0, 255, 0.1);
-    border: 2px solid var(--neon-magenta);
-    border-radius: 5px;
-    font-style: normal;
-    color: var(--neon-magenta);
-    font-weight: 700;
-    min-height: 20px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
-    text-shadow: 0 0 5px var(--neon-magenta);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -1110,6 +1274,35 @@ input[type="time"]::-webkit-calendar-picker-indicator {
         font-size: 0.9rem;
         margin: 5px;
         letter-spacing: 1px;
+    }
+
+    .alarm-clock-display {
+        padding: 20px 15px;
+        margin: 15px auto;
+    }
+
+    .bell {
+        font-size: 1.6rem;
+    }
+
+    .alarm-time-display {
+        font-size: 3rem;
+        letter-spacing: 6px;
+    }
+
+    .alarm-status {
+        font-size: 0.9rem;
+    }
+
+    .alarm-controls input {
+        min-width: 120px;
+        padding: 12px 16px;
+        font-size: 1rem;
+    }
+
+    .alarm-buttons button {
+        padding: 10px 18px;
+        font-size: 0.85rem;
     }
 
     .stopwatch-display-container {
@@ -1218,6 +1411,64 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     .large-text {
         font-size: 2.5rem;
         letter-spacing: 2px;
+    }
+
+    .alarm-clock-display {
+        padding: 18px 12px;
+        margin: 12px auto;
+    }
+
+    .alarm-bells {
+        padding: 0 15px;
+    }
+
+    .bell {
+        font-size: 1.4rem;
+    }
+
+    .alarm-time-display {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+        margin: 12px 0 8px;
+    }
+
+    .alarm-status {
+        font-size: 0.85rem;
+        margin: 8px 0;
+    }
+
+    .alarm-indicator {
+        padding: 6px 12px;
+        margin-top: 12px;
+    }
+
+    .indicator-label {
+        font-size: 0.7rem;
+    }
+
+    .alarm-controls {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .alarm-controls input {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    .alarm-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .alarm-buttons button {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px 20px;
+        font-size: 0.85rem;
     }
 
     .stopwatch-display-container {
