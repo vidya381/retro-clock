@@ -350,7 +350,9 @@ document.addEventListener('DOMContentLoaded', function() {
         alarmTimeInput.value = '';
         alarmDisplay.textContent = '--:--';
         alarmCountdown.textContent = 'No alarm set';
-        alarmRingProgress.style.strokeDashoffset = 754;
+        alarmClockDisplay.classList.remove('alarm-active');
+        const indicatorLabel = alarmIndicator.querySelector('.indicator-label');
+        if (indicatorLabel) indicatorLabel.textContent = 'ALARM OFF';
         localStorage.removeItem('digitalClockAlarm');
         console.log('Alarm cleared');
     }
