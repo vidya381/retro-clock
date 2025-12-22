@@ -205,10 +205,22 @@ body.dark-mode #day {
 }
 
 body.dark-mode .timezone-badge {
-    background: rgba(0, 255, 0, 0.1);
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.15), rgba(255, 170, 0, 0.08));
     border-color: var(--terminal-green);
     color: var(--terminal-green);
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    box-shadow:
+        0 0 20px rgba(0, 255, 0, 0.4),
+        inset 0 1px 2px rgba(0, 255, 0, 0.1);
+}
+
+body.dark-mode .timezone-badge::before {
+    filter: drop-shadow(0 0 5px var(--terminal-green));
+}
+
+body.dark-mode .timezone-badge:hover {
+    box-shadow:
+        0 0 25px rgba(0, 255, 0, 0.6),
+        inset 0 1px 2px rgba(0, 255, 0, 0.1);
 }
 
 body.dark-mode .alarm-section,
@@ -438,25 +450,43 @@ body.dark-mode input[type="time"]::-webkit-calendar-picker-indicator {
 
 /* Dark mode Select2 - Terminal style */
 body.dark-mode .select2-container--default .select2-selection--single {
-    background: rgba(0, 0, 0, 0.8);
-    border-color: var(--terminal-dim);
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 20, 0, 0.9));
+    border-color: var(--terminal-green);
+    box-shadow:
+        0 0 15px rgba(0, 255, 0, 0.3),
+        inset 0 1px 3px rgba(0, 255, 0, 0.1);
+}
+
+body.dark-mode .select2-container--default .select2-selection--single::before {
+    filter: drop-shadow(0 0 5px var(--terminal-green));
 }
 
 body.dark-mode .select2-container--default .select2-selection--single:hover {
     border-color: var(--terminal-green);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+    box-shadow:
+        0 0 20px var(--terminal-green),
+        inset 0 1px 3px rgba(0, 255, 0, 0.1);
 }
 
 body.dark-mode .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: var(--terminal-green);
-    text-shadow: 0 0 5px var(--terminal-green);
+    text-shadow: 0 0 8px var(--terminal-green);
+}
+
+body.dark-mode .select2-container--default .select2-selection__arrow b {
+    border-color: var(--terminal-green) transparent transparent transparent;
+}
+
+body.dark-mode .select2-container--default.select2-container--open .select2-selection__arrow b {
+    border-color: transparent transparent var(--terminal-green) transparent;
 }
 
 body.dark-mode .select2-dropdown {
-    background: rgba(0, 10, 0, 0.98);
+    background: linear-gradient(135deg, rgba(0, 10, 0, 0.98), rgba(0, 20, 0, 0.98));
     border-color: var(--terminal-green);
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+    box-shadow:
+        0 0 30px rgba(0, 255, 0, 0.5),
+        inset 0 1px 2px rgba(0, 255, 0, 0.1);
 }
 
 body.dark-mode .select2-container--default .select2-results__option {
@@ -464,14 +494,15 @@ body.dark-mode .select2-container--default .select2-results__option {
 }
 
 body.dark-mode .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background: rgba(0, 255, 0, 0.2) !important;
+    background: linear-gradient(90deg, rgba(0, 255, 0, 0.2), rgba(255, 170, 0, 0.1)) !important;
     color: var(--terminal-green);
     text-shadow: 0 0 10px var(--terminal-green);
+    border-left-color: var(--terminal-green);
 }
 
 body.dark-mode .select2-container--default .select2-search--dropdown .select2-search__field {
     background: rgba(0, 0, 0, 0.8);
-    border-color: var(--terminal-dim);
+    border-color: rgba(0, 255, 0, 0.5);
     color: var(--terminal-green);
 }
 
@@ -859,83 +890,139 @@ h2::before {
 }
 
 .timezone-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin-top: 15px;
     padding: 8px 20px;
-    background: rgba(0, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(157, 0, 255, 0.08));
     border: 2px solid var(--neon-cyan);
-    border-radius: 5px;
+    border-radius: 20px;
     color: var(--neon-cyan);
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    box-shadow: 0 0 15px var(--neon-cyan);
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.timezone-badge::before {
+    content: '📍';
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 5px var(--neon-cyan));
+}
+
+.timezone-badge:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 25px rgba(0, 255, 255, 0.6),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
 /* Select2 Styling */
 .select2-container {
-    width: 100% !important;
-    margin-bottom: 20px;
+    width: auto !important;
+    min-width: 250px;
 }
 
 .select2-container--default .select2-selection--single {
-    background: rgba(0, 0, 0, 0.7);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(20, 0, 40, 0.8));
     border: 2px solid var(--neon-purple);
-    border-radius: 5px;
-    height: 50px;
+    border-radius: 6px;
+    height: 38px;
     display: flex;
     align-items: center;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(157, 0, 255, 0.3);
+    box-shadow:
+        0 0 15px rgba(157, 0, 255, 0.3),
+        inset 0 1px 3px rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.select2-container--default .select2-selection--single::before {
+    content: '🌍';
+    position: absolute;
+    left: 10px;
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 5px var(--neon-cyan));
 }
 
 .select2-container--default .select2-selection--single:hover {
     border-color: var(--neon-cyan);
-    box-shadow: 0 0 15px var(--neon-cyan);
+    box-shadow:
+        0 0 20px var(--neon-cyan),
+        inset 0 1px 3px rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: var(--neon-purple);
-    line-height: 50px;
-    padding-left: 20px;
+    color: var(--neon-cyan);
+    line-height: 38px;
+    padding-left: 38px;
+    padding-right: 35px;
     font-weight: 700;
-    text-shadow: 0 0 5px var(--neon-purple);
+    font-size: 0.9rem;
+    text-shadow: 0 0 8px var(--neon-cyan);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 50px;
-    right: 10px;
+    height: 38px;
+    right: 8px;
+}
+
+.select2-container--default .select2-selection__arrow b {
+    border-color: var(--neon-purple) transparent transparent transparent;
+    border-width: 6px 5px 0 5px;
+}
+
+.select2-container--default.select2-container--open .select2-selection__arrow b {
+    border-color: transparent transparent var(--neon-cyan) transparent;
+    border-width: 0 5px 6px 5px;
 }
 
 .select2-dropdown {
-    background: rgba(10, 10, 15, 0.95);
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.98), rgba(20, 0, 30, 0.98));
     border: 2px solid var(--neon-purple);
-    border-radius: 5px;
-    box-shadow: 0 0 20px var(--neon-purple);
+    border-radius: 6px;
+    box-shadow:
+        0 0 30px rgba(157, 0, 255, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .select2-container--default .select2-results__option {
     background: transparent;
     color: var(--neon-cyan);
-    padding: 12px 20px;
+    padding: 10px 20px;
     transition: all 0.2s ease;
     font-weight: 600;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    border-left: 3px solid transparent;
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background: rgba(0, 255, 255, 0.2) !important;
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(157, 0, 255, 0.1)) !important;
     color: var(--neon-cyan);
     text-shadow: 0 0 10px var(--neon-cyan);
+    border-left-color: var(--neon-cyan);
 }
 
 .select2-container--default .select2-search--dropdown .select2-search__field {
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid var(--neon-purple);
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(157, 0, 255, 0.5);
     border-radius: 5px;
     color: var(--neon-cyan);
     padding: 10px 15px;
     font-weight: 600;
+    font-family: 'Courier New', monospace;
 }
 
 /* Section Cards */

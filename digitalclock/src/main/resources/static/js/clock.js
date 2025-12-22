@@ -43,6 +43,33 @@ document.addEventListener('DOMContentLoaded', function() {
     let timerTotalTime = 0;
 
     // Initialize timezone dropdown
+    // Timezone persistence
+    function saveTimezone(timezone) {
+        localStorage.setItem('digitalClockTimezone', timezone);
+        console.log('Timezone saved to localStorage:', timezone);
+    }
+
+    function loadTimezoneFromStorage() {
+        try {
+            const savedTimezone = localStorage.getItem('digitalClockTimezone');
+            if (savedTimezone && timezoneSelect) {
+                // Set the value and trigger Select2 to update
+                $(timezoneSelect).val(savedTimezone).trigger('change.select2');
+                console.log('Timezone loaded from localStorage:', savedTimezone);
+                return savedTimezone;
+            }
+        } catch (e) {
+            console.log('Error loading timezone from localStorage:', e);
+        }
+
+        // If no saved timezone, use browser's detected timezone
+        const detectedTimezone = moment.tz.guess();
+        if (timezoneSelect) {
+            $(timezoneSelect).val(detectedTimezone).trigger('change.select2');
+        }
+        return detectedTimezone;
+    }
+
     if (timezoneSelect) {
         moment.tz.names().forEach(tz => {
             const option = new Option(tz, tz);
@@ -55,14 +82,21 @@ document.addEventListener('DOMContentLoaded', function() {
             templateSelection: formatTimezone
         });
 
-        timezoneSelect.addEventListener('change', updateClock);
+        // Save timezone when changed
+        timezoneSelect.addEventListener('change', function() {
+            saveTimezone(timezoneSelect.value);
+            updateClock();
+        });
+
+        // Load saved timezone after Select2 is initialized
+        loadTimezoneFromStorage();
     }
 
     // Clock functionality
     function updateClock() {
         const selectedTimezone = timezoneSelect ? timezoneSelect.value : moment.tz.guess();
         const now = moment().tz(selectedTimezone);
-        
+
         if (clockElement) clockElement.textContent = now.format('HH:mm:ss');
         if (dateElement) dateElement.textContent = now.format('MMMM D, YYYY');
         if (dayElement) dayElement.textContent = now.format('dddd');
