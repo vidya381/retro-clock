@@ -530,13 +530,12 @@ body.dark-mode .select2-container--default .select2-search--dropdown .select2-se
 }
 
 body.dark-mode .dark-mode-toggle {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.95), rgba(0, 20, 0, 0.98));
     border-color: var(--terminal-green);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
-}
-
-body.dark-mode .dark-mode-toggle:hover {
-    box-shadow: 0 0 25px rgba(0, 255, 0, 0.7);
-    background: rgba(0, 255, 0, 0.15);
+    box-shadow:
+        0 0 20px rgba(0, 255, 0, 0.4),
+        inset 0 2px 5px rgba(0, 255, 0, 0.1),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.7);
 }
 
 * {
@@ -707,25 +706,49 @@ body::after {
     box-shadow: 0 0 10px var(--neon-magenta);
 }
 
+/* Corner Badge with Label */
 .dark-mode-toggle {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    background: transparent;
-    border: 2px solid var(--neon-yellow);
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 24px;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px 6px 8px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(20, 20, 40, 0.9));
+    border: 2px solid var(--neon-magenta);
+    border-radius: 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
     z-index: 100;
-    box-shadow: 0 0 10px var(--neon-yellow);
+    box-shadow:
+        0 0 20px rgba(255, 0, 255, 0.5),
+        inset 0 1px 3px rgba(255, 255, 255, 0.15),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.6);
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
 }
 
-.dark-mode-toggle:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px var(--neon-yellow);
-    background: rgba(255, 255, 0, 0.1);
+.dark-mode-toggle::after {
+    content: 'MODE';
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--neon-magenta);
+    text-shadow: 0 0 8px var(--neon-magenta);
+    transition: all 0.3s ease;
+}
+
+.dark-mode-toggle .icon-light,
+.dark-mode-toggle .icon-dark {
+    font-size: 18px;
+    filter: drop-shadow(0 0 8px currentColor);
+    transition: all 0.3s ease;
+    animation: iconBob 2s ease-in-out infinite;
+}
+
+@keyframes iconBob {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-2px) scale(1.05); }
 }
 
 body:not(.dark-mode) .dark-mode-toggle .icon-dark {
@@ -734,6 +757,51 @@ body:not(.dark-mode) .dark-mode-toggle .icon-dark {
 
 body.dark-mode .dark-mode-toggle .icon-light {
     display: none;
+}
+
+.dark-mode-toggle:hover {
+    transform: translateY(-2px);
+    border-color: var(--neon-cyan);
+    box-shadow:
+        0 0 30px rgba(0, 255, 255, 0.6),
+        inset 0 1px 3px rgba(255, 255, 255, 0.2),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.dark-mode-toggle:hover::after {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.dark-mode-toggle:active {
+    transform: translateY(0) scale(0.97);
+}
+
+body.dark-mode .dark-mode-toggle {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 20, 0, 0.95));
+    border-color: var(--terminal-green);
+    box-shadow:
+        0 0 20px rgba(0, 255, 0, 0.5),
+        inset 0 1px 3px rgba(0, 255, 0, 0.15),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .dark-mode-toggle::after {
+    color: var(--terminal-green);
+    text-shadow: 0 0 8px var(--terminal-green);
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+    border-color: var(--terminal-amber);
+    box-shadow:
+        0 0 30px rgba(255, 170, 0, 0.6),
+        inset 0 1px 3px rgba(0, 255, 0, 0.2),
+        inset 0 -1px 3px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .dark-mode-toggle:hover::after {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 10px var(--terminal-amber);
 }
 
 h1 {
@@ -1958,10 +2026,19 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     }
 
     .dark-mode-toggle {
-        top: 15px;
-        right: 15px;
-        padding: 8px 12px;
-        font-size: 20px;
+        top: 12px;
+        right: 12px;
+        padding: 5px 10px 5px 7px;
+        gap: 5px;
+    }
+
+    .dark-mode-toggle .icon-light,
+    .dark-mode-toggle .icon-dark {
+        font-size: 16px;
+    }
+
+    .dark-mode-toggle::after {
+        font-size: 8px;
     }
 
     .alarm-section,
@@ -2001,6 +2078,23 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     h2::before,
     h2::after {
         font-size: 1.4rem;
+    }
+
+    .dark-mode-toggle {
+        top: 8px;
+        right: 8px;
+        padding: 4px 8px 4px 6px;
+        gap: 4px;
+    }
+
+    .dark-mode-toggle .icon-light,
+    .dark-mode-toggle .icon-dark {
+        font-size: 14px;
+    }
+
+    .dark-mode-toggle::after {
+        font-size: 7px;
+        letter-spacing: 0.5px;
     }
 
     .clock-label {
