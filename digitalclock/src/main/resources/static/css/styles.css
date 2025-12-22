@@ -98,12 +98,26 @@ body.dark-mode h1 {
 }
 
 body.dark-mode h2 {
-    color: var(--terminal-amber);
-    text-shadow: 0 0 15px var(--terminal-amber);
+    color: var(--terminal-green);
+    text-shadow: 0 0 15px var(--terminal-green);
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0, 255, 0, 0.1) 20%,
+        rgba(255, 170, 0, 0.15) 50%,
+        rgba(0, 255, 0, 0.1) 80%,
+        transparent 100%);
+    border-image: linear-gradient(90deg,
+        transparent,
+        var(--terminal-green) 20%,
+        var(--terminal-amber) 50%,
+        var(--terminal-green) 80%,
+        transparent) 1;
 }
 
-body.dark-mode h2::before {
-    color: var(--terminal-green);
+body.dark-mode h2::before,
+body.dark-mode h2::after {
+    color: var(--terminal-amber);
+    text-shadow: 0 0 15px var(--terminal-amber);
 }
 
 body.dark-mode .large-text {
@@ -733,20 +747,57 @@ h2 {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--neon-magenta);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     text-transform: uppercase;
     letter-spacing: 3px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    text-align: center;
+    padding: 15px 30px;
+    position: relative;
     text-shadow: 0 0 10px var(--neon-magenta);
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 0, 255, 0.1) 20%,
+        rgba(0, 255, 255, 0.15) 50%,
+        rgba(255, 0, 255, 0.1) 80%,
+        transparent 100%);
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg,
+        transparent,
+        var(--neon-magenta) 20%,
+        var(--neon-cyan) 50%,
+        var(--neon-magenta) 80%,
+        transparent) 1;
 }
 
 h2::before {
-    content: '▶';
+    content: '◢';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--neon-cyan);
-    font-size: 1.2rem;
-    animation: float 1s ease-in-out infinite;
+    font-size: 2rem;
+    text-shadow: 0 0 15px var(--neon-cyan);
+    animation: scanPulse 2s ease-in-out infinite;
+}
+
+h2::after {
+    content: '◣';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neon-cyan);
+    font-size: 2rem;
+    text-shadow: 0 0 15px var(--neon-cyan);
+    animation: scanPulse 2s ease-in-out infinite;
+}
+
+@keyframes scanPulse {
+    0%, 100% { opacity: 0.6; transform: translateY(-50%) scale(1); }
+    50% { opacity: 1; transform: translateY(-50%) scale(1.1); }
 }
 
 /* Clock Section */
@@ -1681,8 +1732,14 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     }
 
     h2 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         letter-spacing: 2px;
+        padding: 12px 25px;
+    }
+
+    h2::before,
+    h2::after {
+        font-size: 1.6rem;
     }
 
     .clock-header {
@@ -1866,6 +1923,18 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     h1 {
         font-size: 2rem;
         letter-spacing: 2px;
+    }
+
+    h2 {
+        font-size: 1.1rem;
+        letter-spacing: 1.5px;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+    }
+
+    h2::before,
+    h2::after {
+        font-size: 1.4rem;
     }
 
     .clock-label {
