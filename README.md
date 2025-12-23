@@ -2,6 +2,12 @@
 
 A feature-rich web-based digital clock application built with Spring Boot and vanilla JavaScript, featuring a stunning **retro 80s/90s arcade aesthetic**. This application provides a world clock with timezone support, alarm functionality, stopwatch, and countdown timer, all wrapped in nostalgic neon visuals.
 
+## 🚀 Live Demo
+
+**[View Live Application](https://clock-8wak.onrender.com)**
+
+*Note: Hosted on Render's free tier - initial load may take 30-60 seconds as the service spins up.*
+
 ## Features
 
 ### 1. World Clock
