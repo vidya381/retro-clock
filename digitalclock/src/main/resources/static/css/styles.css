@@ -2083,18 +2083,21 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     .dark-mode-toggle {
         top: 8px;
         right: 8px;
-        padding: 4px 8px 4px 6px;
-        gap: 4px;
+        padding: 8px;
+        gap: 0;
+        min-width: auto;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+    }
+
+    .dark-mode-toggle::after {
+        content: none;
     }
 
     .dark-mode-toggle .icon-light,
     .dark-mode-toggle .icon-dark {
-        font-size: 14px;
-    }
-
-    .dark-mode-toggle::after {
-        font-size: 7px;
-        letter-spacing: 0.5px;
+        font-size: 16px;
     }
 
     .clock-label {
