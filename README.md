@@ -8,6 +8,20 @@ A feature-rich web-based digital clock application built with Spring Boot and va
 
 *Note: Hosted on Render's free tier - initial load may take 30-60 seconds as the service spins up.*
 
+## 📸 Screenshots
+
+### Light Mode - Neon Arcade Aesthetic
+![Light Mode Desktop](screenshots/light-mode-desktop.png)
+*Vibrant 80s/90s arcade style with cyan, magenta, pink, and yellow neon colors*
+
+### Dark Mode - Classic CRT Terminal
+![Dark Mode Desktop](screenshots/dark-mode-desktop.png)
+*Authentic 1970s-80s terminal green phosphor display with amber accents*
+
+### Mobile Responsive Design
+![Mobile View](screenshots/mobile-view.png)
+*Fully responsive layout optimized for mobile devices*
+
 ## Features
 
 ### 1. World Clock
