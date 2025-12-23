@@ -4,7 +4,7 @@ A feature-rich web-based digital clock application built with Spring Boot and va
 
 ## 🚀 Live Demo
 
-**[View Live Application](https://clock-8wak.onrender.com)**
+**[View Live Application](https://retro-clock.onrender.com)**
 
 *Note: Hosted on Render's free tier - initial load may take 30-60 seconds as the service spins up.*
 
