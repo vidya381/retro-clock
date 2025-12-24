@@ -134,8 +134,8 @@ The application features a meticulously crafted retro digital aesthetic that cap
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/Digital-Clock.git
-cd Digital-Clock
+git clone https://github.com/yourusername/retro-clock.git
+cd retro-clock
 ```
 
 ### 2. Build the project
@@ -214,7 +214,7 @@ http://localhost:8080
 ## Project Structure
 
 ```
-Digital-Clock/
+retro-clock/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/digitalclock/
