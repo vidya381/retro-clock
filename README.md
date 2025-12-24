@@ -138,12 +138,7 @@ git clone https://github.com/yourusername/Digital-Clock.git
 cd Digital-Clock
 ```
 
-### 2. Navigate to the project directory
-```bash
-cd digitalclock
-```
-
-### 3. Build the project
+### 2. Build the project
 ```bash
 # Using Maven wrapper (recommended)
 ./mvnw clean install
@@ -152,7 +147,7 @@ cd digitalclock
 mvn clean install
 ```
 
-### 4. Run the application
+### 3. Run the application
 ```bash
 # Using Maven wrapper
 ./mvnw spring-boot:run
@@ -164,7 +159,7 @@ mvn spring-boot:run
 java -jar target/digitalclock-0.0.1-SNAPSHOT.jar
 ```
 
-### 5. Access the application
+### 4. Access the application
 Open your web browser and navigate to:
 ```
 http://localhost:8080
@@ -219,7 +214,7 @@ http://localhost:8080
 ## Project Structure
 
 ```
-digitalclock/
+Digital-Clock/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/digitalclock/
@@ -240,8 +235,10 @@ digitalclock/
 │   └── test/
 │       └── java/com/example/digitalclock/
 │           └── DigitalClockApplicationTests.java
+├── screenshots/                                 # Application screenshots
 ├── pom.xml                                      # Maven dependencies
-└── README.md
+├── Dockerfile                                   # Docker configuration
+└── README.md                                    # Documentation
 ```
 
 ## Configuration
