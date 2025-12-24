@@ -1,6 +1,6 @@
-# Digital Clock
+# Retro Clock
 
-A feature-rich web-based digital clock application built with Spring Boot and vanilla JavaScript, featuring a stunning **retro 80s/90s arcade aesthetic**. This application provides a world clock with timezone support, alarm functionality, stopwatch, and countdown timer, all wrapped in nostalgic neon visuals.
+A feature-rich web-based retro clock application built with Spring Boot and vanilla JavaScript, featuring a stunning **80s/90s arcade aesthetic**. This application provides a world clock with timezone support, alarm functionality, stopwatch, and countdown timer, all wrapped in nostalgic neon visuals and classic CRT terminal effects.
 
 ## 🚀 Live Demo
 

@@ -11,8 +11,8 @@
 	<groupId>com.example</groupId>
 	<artifactId>digitalclock</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>digital-clock</name>
-	<description>Digital Clock</description>
+	<name>retro-clock</name>
+	<description>Retro Clock - 80s/90s Arcade Style Digital Clock</description>
 	<url/>
 	<licenses>
 		<license/>
