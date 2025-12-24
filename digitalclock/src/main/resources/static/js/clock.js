@@ -23,7 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const timerRingProgress = document.getElementById('timerRingProgress');
 
     // Alarm elements
-    const alarmTimeInput = document.getElementById('alarmTime');
+    const hourDrumPicker = document.getElementById('hourDrumPicker');
+    const minuteDrumPicker = document.getElementById('minuteDrumPicker');
+    const periodDrumPicker = document.getElementById('periodDrumPicker');
     const setAlarmBtn = document.getElementById('setAlarm');
     const cancelAlarmBtn = document.getElementById('cancelAlarm');
     const alarmDisplay = document.getElementById('alarmDisplay');
@@ -36,11 +38,149 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize variables
     let alarmTime = null;
+    let alarmAudioContext = null;
+    let alarmOscillators = [];
     let stopwatchInterval;
     let stopwatchTime = 0;
     let timerInterval;
     let timerTime = 0;
     let timerTotalTime = 0;
+
+    // Drum Picker Implementation
+    class DrumPicker {
+        constructor(element, values, defaultIndex = 0) {
+            this.element = element;
+            this.values = values;
+            this.currentIndex = defaultIndex;
+            this.itemsContainer = element.querySelector('.drum-picker-items');
+            this.itemHeight = 18;
+            this.sensitivityMultiplier = 1.8; // Higher = less sensitive
+
+            this.init();
+            this.attachEvents();
+        }
+
+        init() {
+            // Create drum items
+            this.values.forEach((value, index) => {
+                const item = document.createElement('div');
+                item.className = 'drum-picker-item';
+                item.textContent = value;
+                item.dataset.index = index;
+                this.itemsContainer.appendChild(item);
+            });
+
+            this.updateSelection(this.currentIndex, false);
+        }
+
+        attachEvents() {
+            let startY = 0;
+            let startScrollTop = 0;
+            let isDragging = false;
+            let lastWheelTime = 0;
+
+            this.element.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startY = e.clientY;
+                startScrollTop = this.currentIndex;
+                this.element.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const deltaY = startY - e.clientY;
+                const itemsMoved = Math.round(deltaY / (this.itemHeight * this.sensitivityMultiplier));
+                const newIndex = Math.max(0, Math.min(this.values.length - 1, startScrollTop + itemsMoved));
+                this.updateSelection(newIndex, false);
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    this.element.style.cursor = 'pointer';
+                    // Snap to nearest on release
+                    this.updateSelection(this.currentIndex, true);
+                }
+            });
+
+            // Touch events for mobile
+            this.element.addEventListener('touchstart', (e) => {
+                startY = e.touches[0].clientY;
+                startScrollTop = this.currentIndex;
+            });
+
+            this.element.addEventListener('touchmove', (e) => {
+                const deltaY = startY - e.touches[0].clientY;
+                const itemsMoved = Math.round(deltaY / (this.itemHeight * this.sensitivityMultiplier));
+                const newIndex = Math.max(0, Math.min(this.values.length - 1, startScrollTop + itemsMoved));
+                this.updateSelection(newIndex, false);
+            });
+
+            this.element.addEventListener('touchend', () => {
+                // Snap to nearest on release
+                this.updateSelection(this.currentIndex, true);
+            });
+
+            // Wheel event for desktop with debounce
+            this.element.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const now = Date.now();
+                if (now - lastWheelTime < 150) return; // Debounce wheel events
+                lastWheelTime = now;
+
+                const delta = e.deltaY > 0 ? 1 : -1;
+                const newIndex = Math.max(0, Math.min(this.values.length - 1, this.currentIndex + delta));
+                this.updateSelection(newIndex, true);
+            });
+        }
+
+        updateSelection(index, animate = true) {
+            this.currentIndex = index;
+            const offset = -index * this.itemHeight;
+
+            if (animate) {
+                this.itemsContainer.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            } else {
+                this.itemsContainer.style.transition = 'transform 0.15s ease-out';
+            }
+
+            this.itemsContainer.style.transform = `translateY(${offset}px)`;
+
+            // Update selected class
+            const items = this.itemsContainer.querySelectorAll('.drum-picker-item');
+            items.forEach((item, i) => {
+                item.classList.toggle('selected', i === index);
+            });
+        }
+
+        getValue() {
+            return this.values[this.currentIndex];
+        }
+
+        setValue(value) {
+            const index = this.values.indexOf(value);
+            if (index !== -1) {
+                this.updateSelection(index, true);
+            }
+        }
+    }
+
+    // Initialize drum pickers
+    let hourPicker, minutePicker, periodPicker;
+
+    if (hourDrumPicker) {
+        const hours = Array.from({length: 12}, (_, i) => (i + 1).toString().padStart(2, '0'));
+        hourPicker = new DrumPicker(hourDrumPicker, hours, 6); // Default to 07
+    }
+
+    if (minuteDrumPicker) {
+        const minutes = Array.from({length: 60}, (_, i) => i.toString().padStart(2, '0'));
+        minutePicker = new DrumPicker(minuteDrumPicker, minutes, 0); // Default to 00
+    }
+
+    if (periodDrumPicker) {
+        periodPicker = new DrumPicker(periodDrumPicker, ['AM', 'PM'], 0); // Default to AM
+    }
 
     // Initialize timezone dropdown
     // Timezone persistence
@@ -331,25 +471,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Alarm functionality
     function setAlarm() {
-        const alarmInput = alarmTimeInput.value;
-        if (alarmInput) {
-            const selectedTimezone = timezoneSelect ? timezoneSelect.value : moment.tz.guess();
-            const [hours, minutes] = alarmInput.split(':');
-            alarmTime = moment().tz(selectedTimezone).set({hours, minutes, seconds: 0});
+        const hour = hourPicker.getValue();
+        const minute = minutePicker.getValue();
+        const period = periodPicker.getValue();
 
-            // Save to localStorage
-            const alarmData = {
-                time: alarmInput,
-                timezone: selectedTimezone,
-                momentTime: alarmTime.toISOString()
-            };
-            localStorage.setItem('digitalClockAlarm', JSON.stringify(alarmData));
+        const selectedTimezone = timezoneSelect ? timezoneSelect.value : moment.tz.guess();
 
-            // Update display immediately
-            const now = moment().tz(selectedTimezone);
-            updateAlarmDisplay(now);
-            console.log('Alarm saved to localStorage:', alarmData);
+        // Convert 12-hour to 24-hour format
+        let hours24 = parseInt(hour);
+        if (period === 'PM' && hours24 !== 12) {
+            hours24 += 12;
+        } else if (period === 'AM' && hours24 === 12) {
+            hours24 = 0;
         }
+
+        alarmTime = moment().tz(selectedTimezone).set({hours: hours24, minutes: parseInt(minute), seconds: 0});
+
+        // If alarm time is in the past, set it for tomorrow
+        const now = moment().tz(selectedTimezone);
+        if (alarmTime.isSameOrBefore(now)) {
+            alarmTime.add(1, 'day');
+        }
+
+        // Save to localStorage
+        const alarmData = {
+            hour: hour,
+            minute: minute,
+            period: period,
+            timezone: selectedTimezone,
+            momentTime: alarmTime.toISOString()
+        };
+        localStorage.setItem('digitalClockAlarm', JSON.stringify(alarmData));
+
+        // Update display immediately
+        updateAlarmDisplay(now);
+        console.log('Alarm saved to localStorage:', alarmData);
     }
 
     function loadAlarmFromStorage() {
@@ -368,7 +524,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 // Restore alarm UI
-                alarmTimeInput.value = alarmData.time;
+                hourPicker.setValue(alarmData.hour);
+                minutePicker.setValue(alarmData.minute);
+                periodPicker.setValue(alarmData.period);
                 const currentTime = moment();
                 updateAlarmDisplay(currentTime);
                 console.log('Alarm loaded from localStorage:', alarmData);
@@ -381,7 +539,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function clearAlarm() {
         alarmTime = null;
-        alarmTimeInput.value = '';
+        stopAlarmSound();
+        hourPicker.setValue('07');
+        minutePicker.setValue('00');
+        periodPicker.setValue('AM');
         alarmDisplay.textContent = '--:--';
         alarmCountdown.textContent = 'No alarm set';
         alarmClockDisplay.classList.remove('alarm-active');
@@ -397,11 +558,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (now.isSameOrAfter(alarmTime)) {
                 playAlarmSound();
-                // Small delay to let sound start before alert blocks
+                alarmCountdown.textContent = '🔔 ALARM RINGING! 🔔';
+                alarmCountdown.style.fontSize = '1.1rem';
+                alarmCountdown.style.fontWeight = '900';
+                alarmCountdown.style.animation = 'neonPulse 0.5s ease-in-out infinite';
+
+                // Show alert after 2 seconds (so sound plays first)
                 setTimeout(() => {
-                    alert('Alarm ringing!');
-                    clearAlarm();
-                }, 100);
+                    if (confirm('Alarm is ringing! Stop alarm?')) {
+                        clearAlarm();
+                    }
+                }, 2000);
             }
         }
     }
@@ -416,9 +583,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Display alarm time
+        // Display alarm time in 12-hour format
         const selectedTimezone = timezoneSelect ? timezoneSelect.value : moment.tz.guess();
-        alarmDisplay.textContent = alarmTime.tz(selectedTimezone).format('HH:mm');
+        alarmDisplay.textContent = alarmTime.tz(selectedTimezone).format('hh:mm A');
 
         // Add active class
         alarmClockDisplay.classList.add('alarm-active');
@@ -447,33 +614,85 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Play alarm sound using Web Audio API - longer duration
+    // Play continuous alarm sound using Web Audio API
     function playAlarmSound() {
         try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            // Stop any existing alarm sound
+            stopAlarmSound();
 
-            // Play multiple beeps
-            for (let i = 0; i < 5; i++) {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
+            // Create audio context
+            alarmAudioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
+            // Pleasant melodic alarm using musical notes (C-E-G chord progression)
+            // C5 (523Hz), E5 (659Hz), G5 (784Hz) - Major chord
+            const melody = [
+                { freq: 523, start: 0, duration: 0.5 },     // C5
+                { freq: 659, start: 0.5, duration: 0.5 },   // E5
+                { freq: 784, start: 1.0, duration: 0.5 },   // G5
+                { freq: 659, start: 1.5, duration: 0.5 },   // E5
+                { freq: 523, start: 2.0, duration: 0.5 },   // C5
+                { freq: 659, start: 2.5, duration: 0.5 },   // E5
+                { freq: 784, start: 3.0, duration: 0.5 },   // G5
+                { freq: 659, start: 3.5, duration: 0.5 }    // E5
+            ];
 
-                oscillator.frequency.value = 800; // Frequency in Hz
-                oscillator.type = 'sine';
+            const now = alarmAudioContext.currentTime;
 
-                const startTime = audioContext.currentTime + (i * 0.5);
-                const endTime = startTime + 0.3;
+            // Play the melody pattern 3 times (12 seconds total)
+            for (let repeat = 0; repeat < 3; repeat++) {
+                const repeatOffset = repeat * 4; // Each cycle is 4 seconds
 
-                gainNode.gain.setValueAtTime(0.3, startTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, endTime);
+                melody.forEach(note => {
+                    const oscillator = alarmAudioContext.createOscillator();
+                    const gainNode = alarmAudioContext.createGain();
 
-                oscillator.start(startTime);
-                oscillator.stop(endTime);
+                    oscillator.connect(gainNode);
+                    gainNode.connect(alarmAudioContext.destination);
+
+                    oscillator.frequency.value = note.freq;
+                    oscillator.type = 'sine'; // Smooth sine wave for pleasant sound
+
+                    // Gentle fade in and fade out
+                    const noteStart = now + repeatOffset + note.start;
+                    const noteEnd = noteStart + note.duration;
+
+                    gainNode.gain.setValueAtTime(0, noteStart);
+                    gainNode.gain.linearRampToValueAtTime(0.3, noteStart + 0.05); // Quick fade in
+                    gainNode.gain.linearRampToValueAtTime(0.3, noteEnd - 0.1);    // Hold
+                    gainNode.gain.linearRampToValueAtTime(0, noteEnd);            // Fade out
+
+                    oscillator.start(noteStart);
+                    oscillator.stop(noteEnd);
+
+                    alarmOscillators.push(oscillator);
+                });
             }
+
+            console.log('Alarm sound playing - pleasant melody');
         } catch (e) {
             console.log('Error playing alarm sound:', e);
+        }
+    }
+
+    // Stop alarm sound
+    function stopAlarmSound() {
+        try {
+            if (alarmOscillators.length > 0) {
+                alarmOscillators.forEach(osc => {
+                    try {
+                        osc.stop();
+                    } catch (e) {
+                        // Oscillator may already be stopped
+                    }
+                });
+                alarmOscillators = [];
+            }
+            if (alarmAudioContext) {
+                alarmAudioContext.close();
+                alarmAudioContext = null;
+            }
+        } catch (e) {
+            console.log('Error stopping alarm sound:', e);
         }
     }
 

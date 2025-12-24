@@ -76,7 +76,33 @@
             <div class="alarm-controls">
                 <div class="alarm-input-wrapper">
                     <label class="alarm-label">SET TIME</label>
-                    <input type="time" id="alarmTime" placeholder="Set time">
+                    <div class="alarm-time-inputs">
+                        <div class="drum-picker-wrapper">
+                            <div class="drum-picker" id="hourDrumPicker" data-type="hour">
+                                <div class="drum-picker-highlight"></div>
+                                <div class="drum-picker-gradient-top"></div>
+                                <div class="drum-picker-gradient-bottom"></div>
+                                <div class="drum-picker-items" id="hourDrumItems"></div>
+                            </div>
+                        </div>
+                        <span class="time-separator">:</span>
+                        <div class="drum-picker-wrapper">
+                            <div class="drum-picker" id="minuteDrumPicker" data-type="minute">
+                                <div class="drum-picker-highlight"></div>
+                                <div class="drum-picker-gradient-top"></div>
+                                <div class="drum-picker-gradient-bottom"></div>
+                                <div class="drum-picker-items" id="minuteDrumItems"></div>
+                            </div>
+                        </div>
+                        <div class="drum-picker-wrapper drum-period">
+                            <div class="drum-picker" id="periodDrumPicker" data-type="period">
+                                <div class="drum-picker-highlight"></div>
+                                <div class="drum-picker-gradient-top"></div>
+                                <div class="drum-picker-gradient-bottom"></div>
+                                <div class="drum-picker-items" id="periodDrumItems"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="alarm-buttons">
                     <button id="setAlarm" class="btn-set">
